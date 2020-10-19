@@ -30,7 +30,7 @@
     svg.append('defs').append('marker')
         .attrs({'id':'arrowhead',
             'viewBox':'-0 -5 10 10',
-            'refX':25,
+            'refX':1,
             'refY':0,
             'orient':'auto',
             'markerWidth':13,
@@ -42,7 +42,7 @@
         .style('stroke','none');
 
     var simulation = d3.forceSimulation()
-        .force("link", d3.forceLink().id(function (d) {return d.id;}).distance(100).strength(1))
+        .force("link", d3.forceLink().id(function (d) {return d.id;}).distance(400).strength(1))
         .force("charge", d3.forceManyBody())
         .force("center", d3.forceCenter(width / 2, height / 2));
 
@@ -109,7 +109,18 @@
             );
 
         node.append("circle")
-            .attr("r", 20)
+            .attr("r",
+            function(d){
+                    if (d.weight == 0){
+                        return 5;
+                    }else if (d.weight <= 10){
+                        return d.weight * 5;
+                    }else{
+                        return 50;
+                    }
+
+                }
+            )
             .style("fill", function (d, i) {return colors(i);})
 
         node.append("title")
@@ -128,11 +139,27 @@
     }
 
     function ticked() {
+        var arrowheadLength = 25,
+        nodeRadius = 5;
+        link.each(function(d) {
+          var x1 = d.source.x,
+              y1 = d.source.y,
+              x2 = d.target.x,
+              y2 = d.target.y,
+           angle = Math.atan2(y2 - y1, x2 - x1);
+          d.targetX = x2 - Math.cos(angle) * (nodeRadius + arrowheadLength);
+          d.targetY = y2 - Math.sin(angle) * (nodeRadius + arrowheadLength);
+        });
+
+
+
+
+
         link
             .attr("x1", function (d) {return d.source.x;})
             .attr("y1", function (d) {return d.source.y;})
-            .attr("x2", function (d) {return d.target.x;})
-            .attr("y2", function (d) {return d.target.y;});
+            .attr("x2", function (d) {return d.targetX;})
+            .attr("y2", function (d) {return d.targetY;});
 
 
         node

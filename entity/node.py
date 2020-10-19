@@ -3,7 +3,7 @@ class node:
         self.name =name
         self.label =label
         self.id = id
-        self.weight = weight#produce越多，权重越大，圆越大
+        self.weight = weight#consume越多，权重越大，圆越大
 
     def __repr__(self):
         return repr((self.name, self.label,self.id,self.weight))

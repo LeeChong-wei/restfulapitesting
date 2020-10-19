@@ -23,7 +23,9 @@ def dep_info_display(api_info_list,dep_matrix,weight_info_list):
         #计算weight
         weight = 0
         for k in range(l):
-            if dep_matrix[i][k] != '-1':
+            if i == k:
+                continue
+            if dep_matrix[k][i] != -1:
                 weight += 1
         n = node(i,'GitLab','API' + str(i),weight)
         nodes.append(n)
@@ -34,6 +36,9 @@ def dep_info_display(api_info_list,dep_matrix,weight_info_list):
     while i < l:
         j = 0
         while j < l:
+            if i == j:
+                j += 1
+                continue
             if dep_matrix[i][j] != -1:
                 lin = link(i,j,'')
                 links.append(lin)
@@ -43,5 +48,5 @@ def dep_info_display(api_info_list,dep_matrix,weight_info_list):
     graph = g(nodes,links)
     write_graph_js(comutil.toJson(graph))
     file_path = os.getcwd() + '/resource/display.html';
-    webbrowser.open_new_tab(file_path)
+    webbrowser.open(file_path)
 

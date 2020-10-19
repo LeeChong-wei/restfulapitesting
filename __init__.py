@@ -10,11 +10,11 @@ if __name__ == '__main__':
     # #展示依赖关系
     # dep_matrix = res['dep_matrix']
     # weight_info_list = res['weight_info_list']
-    dep_matrix = matrix = [[-1, 0, 1,2,-1],
-                           [-1, -1, -1,-1,-1],
-                           [-1, -1, -1,-1,-1],
-                           [-1, -1, -1,-1,-1],
-                           [-1, -1, -1,-1,-1]
+    dep_matrix = matrix = [[-1, 0, 1,2,1],
+                           [1, 0, 1,1,1],
+                           [-1, 0, -1,-1,-1],
+                           [-1, 0, -1,-1,-1],
+                           [-1, 0, -1,-1,-1]
                            ]
     weight_info_list = []
     dep_info_display(None,dep_matrix,weight_info_list)
