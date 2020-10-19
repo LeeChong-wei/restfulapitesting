@@ -1,4 +1,6 @@
 import numpy as np
+from entity.api_info import api_info
+from entity.field_info import field_info
 
 def get_dep_info(api_info_list,num):
     #api的information，以list保存 , num为api的number
