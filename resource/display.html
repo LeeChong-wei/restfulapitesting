@@ -16,6 +16,7 @@
 <script src="http://d3js.org/d3.v4.min.js" type="text/javascript"></script>
 <script src="http://d3js.org/d3-selection-multi.v1.js"></script>
 <script src="graph.js"></script>
+<script src="common.js"></script>
 <script type="text/javascript">
 
 
@@ -111,14 +112,7 @@
         node.append("circle")
             .attr("r",
             function(d){
-                    if (d.weight == 0){
-                        return 5;
-                    }else if (d.weight <= 10){
-                        return d.weight * 5;
-                    }else{
-                        return 50;
-                    }
-
+                    return getCircleR(d.weight)
                 }
             )
             .style("fill", function (d, i) {return colors(i);})
@@ -139,9 +133,12 @@
     }
 
     function ticked() {
-        var arrowheadLength = 25,
-        nodeRadius = 5;
+        myData = load_data();
+        var arrowheadLength = 13;
         link.each(function(d) {
+            index = d.target.id
+            console.log(index)
+            nodeRadius = getCircleR(myData.nodes[index].weight)
           var x1 = d.source.x,
               y1 = d.source.y,
               x2 = d.target.x,
@@ -150,9 +147,6 @@
           d.targetX = x2 - Math.cos(angle) * (nodeRadius + arrowheadLength);
           d.targetY = y2 - Math.sin(angle) * (nodeRadius + arrowheadLength);
         });
-
-
-
 
 
         link
