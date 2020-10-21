@@ -53,9 +53,9 @@ def get_dep_info(api_info_list,dir1,dir2,num):
             list_value=value.split("+")
             index_key=api_info.list(list_key[0])
             index_value=api_info.list(list_value[0])
-            index=matrix[index_key][index_value]
-            weight_info_list[index]=weight_info_list[index].remove(list_key[0])           #在weight[index]位置的该name字段remove
-            if weight_info_list[index]=="":             #判断该weight[index]是否为空，若为空，则无依赖关系
+            index_=matrix[index_key][index_value]
+            weight_info_list[index_]=weight_info_list[index_].remove(list_key[0])           #在weight[index]位置的该name字段remove
+            if weight_info_list[index_]=="":             #判断该weight[index]是否为空，若为空，则无依赖关系
                 matrix[index_key][index_value]=-1       #matrix无依赖关系时，默认值为-1
         for key in dir2.keys():
             value = dir2(key)
