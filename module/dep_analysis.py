@@ -69,5 +69,6 @@ def get_dep_info(api_info_list,dir1,dir2,num):
             weight_info_list[index] = [].append(list_key[1])
             weight_info_list[index] = [].append(list_value[1])
 
+    update_weight(dir1,dir2)
 
     return matrix,weight_info_list
