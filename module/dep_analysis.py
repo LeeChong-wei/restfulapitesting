@@ -14,9 +14,7 @@ matrix -= m
 weight_info_list = {}
 # weight_info_list的index
 index = 0
-global dir1
 dir1 = {}
-global dir2
 dir2 = {}
 
 
