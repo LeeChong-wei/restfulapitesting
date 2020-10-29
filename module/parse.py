@@ -35,5 +35,9 @@ def parse(path,version):
                             resp_param_list.append(resp_param)
                 api = api_info(api_id, complete_api_path, req_param_list, resp_param_list, method)
                 api_list.append(api)
+
     return api_list
     pass
+
+
+parse("C:\\Users\\Admin\\Desktop\\openapi1.yaml", 1.0)
