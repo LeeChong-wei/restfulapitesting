@@ -8,14 +8,14 @@ class api_info:
         self.req_param = req_param
         self.resp_param = resp_param
         self.http_method = http_method
-        self.req_field_names = []
+        # self.req_field_names = []
         # for i in list(self.req_param):
         #     name = (field_info)(i).field_name
         #     self.req_field_names.append(name)
 
     # 判断是否存在依赖关系，从消费者角度
-    def has_dep(self,api_info):
-        if(comutil.has_intersec(self.req_field_names,api_info.req_field_names)):
-            return True
-        else:
-            return False
+    # def has_dep(self,api_info):
+    #     if(comutil.has_intersec(self.req_field_names,api_info.req_field_names)):
+    #         return True
+    #     else:
+    #         return False
