@@ -39,5 +39,3 @@ def parse(path,version):
     return api_list
     pass
 
-
-parse("C:\\Users\\Admin\\Desktop\\openapi1.yaml", 1.0)
