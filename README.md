@@ -160,7 +160,7 @@
 |          |                  |                  |              |                            |                                                              |
 | weight   |                  |                  |              |                            |                                                              |
 | 序号     | 数据元名称       | 数据元标识       | 数据元格式   | 数据元取值示例             | 备注                                                         |
-| 1        | 依赖字段         | dependency_field | dir{integer:list} | {0:['name'],1:['id']}|                                                                |
+| 1        | 依赖字段         | dependency_field | list<string> | [['name'],['id']]|                                                                |
 
  
 

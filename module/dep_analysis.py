@@ -11,7 +11,7 @@ matrix = np.zeros([num, num], dtype=int)
 m = np.ones([num, num], dtype=int)
 matrix -= m
 # 定义一个list，命名weight_info_list，其中index从0~n，填入matrix，其中list[index]=[].append(id,name...)存储请求字段
-weight_info_list = {}
+weight_info_list = []
 # weight_info_list的index
 index = 0
 dir1 = {}
@@ -78,7 +78,7 @@ def adj_matrix(api_info_list):
                                 if dependency(req_field_info, resp_field_info):
                                     matrix[i][j] = index
                                     list.append(req_field_info.field_name)
-                                    weight_info_list[index]=list
+                                    weight_info_list.append(list)
                                     index += 1
 
 
