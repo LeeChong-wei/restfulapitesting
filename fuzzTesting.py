@@ -44,7 +44,7 @@ class testUnit:
 
 
 #解析规范
-parser = ResolvingParser('D:\\desktop\\gitlab swagger\\branches.yaml')
+parser = ResolvingParser('C:\\Users\\Admin\\Desktop\\branches.yaml')
 spec = parser.specification
 
 servers = spec.get("servers")
