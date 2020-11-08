@@ -1,8 +1,10 @@
 from prance import ResolvingParser
 from entity.api_info import api_info
 from entity.field_info import field_info
+import os.path
 
 
+my_path = os.path.abspath(os.path.dirname(__file__))
 def parse(path,version):
     parser = ResolvingParser(path)
     spec = parser.specification
@@ -43,4 +45,4 @@ def parse(path,version):
     pass
 
 
-parse("C:\\Users\\Admin\\Desktop\\project.yaml", 1.0)
+parse(os.path.join(my_path, "../openapi/project.yaml"), 1.0)
