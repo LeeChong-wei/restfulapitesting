@@ -11,7 +11,7 @@ matrix = np.zeros([num, num], dtype=int)
 m = np.ones([num, num], dtype=int)
 matrix -= m
 # 定义一个list，命名weight_info_list，其中index从0~n，填入matrix，其中list[index]=[].append(id,name...)存储请求字段
-weight_info_list = {}
+weight_info_list = []
 # weight_info_list的index
 index = 0
 dir1 = {}
@@ -78,7 +78,7 @@ def adj_matrix(api_info_list):
                                 if dependency(req_field_info, resp_field_info):
                                     matrix[i][j] = index
                                     list.append(req_field_info.field_name)
-                                    weight_info_list[index]=list
+                                    weight_info_list.append(list)
                                     index += 1
 
 
@@ -127,21 +127,3 @@ def get_dep_info(api_info_list, dir1, dir2):
 # api的information，以list保存 , num为api的number  ,  dir1,2分别为特殊的api存储，表示字段相同含义不同，字段不同含义相同
 get_dep_info(api_info_list, dir1, dir2)
 
-#####################################################################################################################
-
-# 自定义数据进行测试
-
-# field_info1=field_info("id",True,123,True,0)
-# field_info2=field_info("name",False,123,True,1)
-# field_info3=field_info("id_user",True,14561,True,3)
-# field_info4=field_info("sha",False,13,True,2)
-# api_info1=api_info(123,"http://127.0.0.1/v3/person",[].append(field_info1),[].append(field_info2),"GET")
-# api_info2=api_info(14563,"http://127.0.0.1/v3/commits",[].append(field_info3),[].append(field_info4),"POST")
-# api_info_list=[api_info1,api_info2]
-#
-# dir1={}
-# dir2={}
-#
-# num=2
-#
-# print (get_dep_info(api_info_list,dir1,dir2,num))
