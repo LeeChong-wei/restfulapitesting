@@ -128,7 +128,7 @@ def get_dep_info(api_info_list):
     # weight_info_list的index
     index = 0
 
-    #dir1, dir2分别为特殊的api存储，表示字段相同含义不同，字段不同含义相同
+    # dir1, dir2分别为特殊的api存储，表示字段相同含义不同，字段不同含义相同
     dir1 = {}
     dir2 = {}
 
