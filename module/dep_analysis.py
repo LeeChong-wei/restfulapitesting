@@ -4,18 +4,18 @@ from entity.api_info import api_info
 from entity.field_info import field_info
 from module.parse import parse
 
-api_info_list = parse("C://Users//李天宇//Desktop//openapi1.yaml", 1.0)
-num = length_hint(api_info_list)
-# 定义邻接矩阵matri
-matrix = np.zeros([num, num], dtype=int)
-m = np.ones([num, num], dtype=int)
-matrix -= m
-# 定义一个list，命名weight_info_list，其中index从0~n，填入matrix，其中list[index]=[].append(id,name...)存储请求字段
-weight_info_list = []
-# weight_info_list的index
-index = 0
-dir1 = {}
-dir2 = {}
+# api_info_list = parse("C://Users//李天宇//Desktop//openapi1.yaml", 1.0)
+# num = length_hint(api_info_list)
+# # 定义邻接矩阵matri
+# matrix = np.zeros([num, num], dtype=int)
+# m = np.ones([num, num], dtype=int)
+# matrix -= m
+# # 定义一个list，命名weight_info_list，其中index从0~n，填入matrix，其中list[index]=[].append(id,name...)存储请求字段
+# weight_info_list = []
+# # weight_info_list的index
+# index = 0
+# dir1 = {}
+# dir2 = {}
 
 
 ################################################################################################################
@@ -63,9 +63,9 @@ def dependency(req_field_info, resp_field_info):
 
 def adj_matrix(api_info_list):
     # 基于consumer的依赖图
-    global matrix
     global index
-    global weight_info_list
+    index = 0
+
     for i in range(num):
         if api_info_list[i].req_param:
             for req_field_info in api_info_list[i].req_param:  # request_list[i][2]是一个req的list,req就是其中的一个field_info,fied_info也是一个list存储
@@ -114,7 +114,25 @@ def update_weight(dir1, dir2):  # dir1,2分别为特殊的api存储，表示字�
 ##################################################################################################################
 
 # api的information，以list保存 , num为api的number  ,  dir1,2分别为特殊的api存储，表示字段相同含义不同，字段不同含义相同
-def get_dep_info(api_info_list, dir1, dir2):
+def get_dep_info(api_info_list):
+    global num;
+    num = length_hint(api_info_list)
+    # 定义邻接矩阵matri
+    global  matrix
+    matrix = np.zeros([num, num], dtype=int)
+    m = np.ones([num, num], dtype=int)
+    matrix -= m
+    # 定义一个list，命名weight_info_list，其中index从0~n，填入matrix，其中list[index]=[].append(id,name...)存储请求字段
+    global weight_info_list
+    weight_info_list = []
+    # weight_info_list的index
+    index = 0
+
+    #dir1, dir2分别为特殊的api存储，表示字段相同含义不同，字段不同含义相同
+    dir1 = {}
+    dir2 = {}
+
+
     adj_matrix(api_info_list)
     update_weight(dir1, dir2)
     print(matrix)
@@ -125,5 +143,5 @@ def get_dep_info(api_info_list, dir1, dir2):
 ###################################################################################################################
 
 # api的information，以list保存 , num为api的number  ,  dir1,2分别为特殊的api存储，表示字段相同含义不同，字段不同含义相同
-get_dep_info(api_info_list, dir1, dir2)
-
+# res = get_dep_info(api_info_list)
+# print(res)

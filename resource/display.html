@@ -45,7 +45,8 @@
     var simulation = d3.forceSimulation()
         .force("link", d3.forceLink().id(function (d) {return d.id;}).distance(400).strength(1))
         .force("charge", d3.forceManyBody())
-        .force("center", d3.forceCenter(width / 2, height / 2));
+        .force("center", d3.forceCenter(width / 2, height / 2))
+        .alphaMin("0.1");
 
     myData = load_data();
     update(myData.links, myData.nodes);
@@ -178,7 +179,7 @@
     }
 
     function dragstarted(d) {
-        if (!d3.event.active) simulation.alphaTarget(0.3).restart()
+        if (!d3.event.active) simulation.alphaTarget(0.1).restart()
         d.fx = d.x;
         d.fy = d.y;
     }
