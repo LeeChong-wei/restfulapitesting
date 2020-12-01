@@ -4,7 +4,9 @@ from prance import ResolvingParser
 import requests
 import re
 import json
+import redis
 
+# 1.0版本方案，将操作存储在文件中
 f_p = open("D://pool.txt", "w+")
 f_d = open("D://delete.txt", "w+")
 

@@ -31,7 +31,9 @@ def topology_visit(g, n):
     topology_order.insert(0, n)
 
 
-for n in out_degree_zero:
-    topology_visit(graph, n)
+def traversal(graph):
+    for n in out_degree_zero:
+        topology_visit(graph, n)
+    return topology_order
 
-print(topology_order)
+# print(topology_order)
