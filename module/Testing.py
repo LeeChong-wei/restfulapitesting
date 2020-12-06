@@ -89,6 +89,7 @@ for i in range(0, len(test_seq)):
     url = api_info.path
     method = api_info.http_method
     data = ''
+
     # 用redis记录post和delete的id
     if method == 'post':
         for i in range(5):
