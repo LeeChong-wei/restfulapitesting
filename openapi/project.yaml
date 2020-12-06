@@ -173,9 +173,141 @@ paths:
           content:
             application/json:
               schema:
-                oneOf:
-                  - $ref: '#/components/schemas/project_unauthenticated'
-                  - $ref: '#/components/schemas/project_authenticated'
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: projects id
+                  description:
+                    type: string
+                    description: project description
+                  default_branch:
+                    type: string
+                  ssh_url_to_repo:
+                    type: string
+                  http_url_to_repo:
+                    type: string
+                  web_url:
+                    type: string
+                  readme_url:
+                    type: string
+                  tag_list:
+                    type: object
+                  owner:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      created_at:
+                        type: string
+                  name:
+                    type: string
+                  name_with_namespace:
+                    type: string
+                  path:
+                    type: string
+                  path_with_namespace:
+                    type: string
+                  issues_enabled:
+                    type: boolean
+                  open_issues_count:
+                    type: integer
+                  merge_requests_enabled:
+                    type: boolean
+                  jobs_enabled:
+                    type: boolean
+                  wiki_enabled:
+                    type: boolean
+                  snippets_enabled:
+                    type: boolean
+                  can_create_merge_request_in:
+                    type: boolean
+                  resolve_outdated_diff_discussions:
+                    type: boolean
+                  container_registry_enabled:
+                    type: boolean
+                  created_at:
+                    type: string
+                  last_activity_at:
+                    type: string
+                  creator_id:
+                    type: integer
+                  namespace:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      path:
+                        type: string
+                      kind:
+                        type: string
+                      full_path:
+                        type: string
+                  import_status:
+                    type: string
+                  archived:
+                    type: boolean
+                  avatar_url:
+                    type: string
+                  shared_runners_enabled:
+                    type: boolean
+                  forks_count:
+                    type: integer
+                  star_count:
+                    type: integer
+                  runners_token:
+                    type: string
+                  ci_default_git_depth:
+                    type: integer
+                  ci_forward_deployment_enabled:
+                    type: boolean
+                  public_jobs:
+                    type: boolean
+                  shared_with_groups:
+                    type: object
+                  only_allow_merge_if_pipeline_succeeds:
+                    type: boolean
+                  allow_merge_on_skipped_pipeline:
+                    type: boolean
+                  only_allow_merge_if_all_discussions_are_resolved:
+                    type: boolean
+                  remove_source_branch_after_merge:
+                    type: boolean
+                  request_access_enabled:
+                    type: boolean
+                  meirge_method:
+                    type: string
+                  autoclose_referenced_issues:
+                    type: boolean
+                  suggestion_commit_message:
+                    type: string
+                  marked_for_deletion_at:
+                    type: string
+                  marked_for_deletion_on:
+                    type: string
+                  statistics:
+                    type: object
+                    properties:
+                      commit_count:
+                        type: integer
+                      storage_size:
+                        type: integer
+                      repository_size:
+                        type: integer
+                      wiki_size:
+                        type: integer
+                      lfs_objects_size:
+                        type: integer
+                      job_artifacts_size:
+                        type: integer
+                      packages_size:
+                        type: integer
+                      snippets_size:
+                        type: integer
     post:
       tags:
         - project

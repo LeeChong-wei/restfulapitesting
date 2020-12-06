@@ -2,10 +2,10 @@ from module.dep_analysis import get_dep_info
 from module.parse import parse
 import os.path
 
-# my_path = os.path.abspath(os.path.dirname(__file__))
-# api_info_list = parse(os.path.join(my_path, "../openapi/project.yaml"), 1.0)
-# matrix, weight_info_list = get_dep_info(api_info_list)
-# graph = matrix.tolist()
+my_path = os.path.abspath(os.path.dirname(__file__))
+api_info_list = parse(os.path.join(my_path, "../openapi/project.yaml"), 1.0)
+matrix, weight_info_list = get_dep_info(api_info_list)
+graph = matrix.tolist()
 
 # 记录拓扑排序顺序
 topology_order = []
@@ -20,17 +20,17 @@ end = []
 def topology_visit(g, n):
     if n not in visited:
         visited.append(n)
-    for m in range(len(g)):
-        if g[m][n] != -1 and m not in visited:
+    for m in range(0, len(g)):
+        if graph[m][n] != -1 and m not in visited:
             topology_visit(g, m)
     topology_order.insert(0, n)
 
 
 def traversal(graph):
-    for i in range(len(graph)):
+    for i in range(0, len(graph)):
         end.append(-1)
     # 收集出度为0的点的集合,即无依赖节点的集合
-    for j in range(len(graph)):
+    for j in range(0, len(graph)):
         if graph[j] == end:
             out_degree_zero.append(j)
     for n in out_degree_zero:

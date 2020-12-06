@@ -42,9 +42,8 @@ class testUnit:
 
 
 
-
 #解析规范
-parser = ResolvingParser('C:\\Users\\Admin\\Desktop\\branches.yaml')
+parser = ResolvingParser("C://Users//litianyu//Desktop//project.yaml")
 spec = parser.specification
 
 servers = spec.get("servers")
@@ -74,9 +73,9 @@ for server in servers:
                     #url追加key1=value1&key2=value2到url后,即查询字符串
                     if flag == 0:
                         flag = 1
-                        completeUrl = completeUrl + "?" + name + "=" + value
+                        completeUrl = completeUrl + "?" + str(name) + "=" + str(value)
                     else:
-                        completeUrl = completeUrl + "&" + name + "=" + value
+                        completeUrl = completeUrl + "&" + str(name) + "=" + str(value)
                 elif inType == 'body':
                     #参数组成json字符串 ==> data
                     pass
