@@ -2683,7 +2683,7 @@ function load_data(){return {
         {
             "source": 33,
             "target": 0,
-            "type": "id"
+            "type": "namespace"
         },
         {
             "source": 33,

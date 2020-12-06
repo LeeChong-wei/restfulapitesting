@@ -82,4 +82,4 @@ for server in servers:
 
             unit = testUnit(method, completeUrl, data)
             response = unit.exec()
-            print(response.content)
+            print(response.text)

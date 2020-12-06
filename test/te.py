@@ -1,25 +1,12 @@
 import random
 
+from prance import ResolvingParser
 import requests
-import redis
-from rest_framework.utils import json
+import re
+import json
 
-from module.traversal import traversal
-from module.dep_analysis import get_dep_info
-from module.parse import parse
-import os.path
-
-# 连接redis-pool
-pool = redis.ConnectionPool(host='127.0.0.1', port=6379)
-# req = redis.StrictRedis(connection_pool=pool)
-resp = redis.StrictRedis(connection_pool=pool)
-
-post = redis.StrictRedis(connection_pool=pool)
-api_id_p = []
-post.set('api_id_p', api_id_p)
-delete = redis.StrictRedis(connection_pool=pool)
-api_id_d = []
-delete.set('api_id_d', api_id_d)
+f_p = open("D://pool.txt", "w+")
+f_d = open("D://delete.txt", "w+")
 
 # 模糊处理
 def fuzz(type):
@@ -47,13 +34,13 @@ class testUnit:
         # 请求API
         print("exec " + method + " " + self.url)
         if method == 'get':
-            return requests.get(self.url, data)
+            return requests.get(self.url)
         elif method == 'post':
-            return requests.post(self.url, data)
+            return requests.post(self.url)
         elif method == 'delete':
             return requests.delete(self.url)
         elif method == 'put':
-            return requests.put(self.url, data)
+            return requests.put(self.url,'l')
         else:
             print("NOT SUPPORTED " + method)
             return None
@@ -61,59 +48,78 @@ class testUnit:
         # 依赖处理
         pass
 
-# 获取依赖测试顺序
-my_path = os.path.abspath(os.path.dirname(__file__))
-api_info_list = parse(os.path.join(my_path, "../openapi/project.yaml"), 1.0)
-matrix, weight_info_list = get_dep_info(api_info_list)
-graph = matrix.tolist()
-test_seq = traversal(graph)
+project_ids=[]
+f = open("D://pool.txt", "w+")
 
-######################## 依照测试顺序进行测试 ######################################
+# 解析规范
+parser = ResolvingParser("C://Users//litianyu//Desktop//project.yaml")
+spec = parser.specification
 
-# 遍历获得测试api在api_info_list中的index,从而得到api_info
-for i in range(0, len(test_seq)):
-    test_api_id = test_seq[i]
-    api_info = api_info_list[test_api_id]
-    url = api_info.path
-    method = api_info.http_method
-    # 用redis记录post和delete的id
-    if method == 'post':
-        post.set('api_id_p', api_id_p.append(api_info.api_id))
-    elif method == 'delete':
-        post.delete('api_id_p', api_id_p.remove(api_info.api_id))
-        delete.set('api_id_d', api_id_d.append(api_info.api_id))
-    for field_info in api_info.req_param:
-        if field_info.require:
-            location = field_info.location
-            value = resp.get(field_info.field_name)  # 从response的redis中根据name取对应value
-            if field_info.fuzz:
-                # fuzz处理
-                continue
-            # 不同的in对应不同的数据   location：0-in,1-query,2-header,3-body
-            elif location == '0':
-                url = url.replace('{' + field_info.field_name + '}', str(value))
-            elif location == '0' and field_info.field_name == 'id' and method == 'delete':
-                value_random = random.choice(resp.get(field_info.field_name))  # 注意存储response为id时，以<'id','[01,02,...]'>存储
-                url = url.replace('{' + field_info.field_name + '}', str(value_random))
-            elif location == '0' and field_info.field_name == 'id' and method == 'get':
-                url = url.replace('{' + field_info.field_name + '}',
-                                  str(random.choice(resp.get(field_info.field_name))))
-            elif location == '1':
-                # url追加key1=value1&key2=value2到url后,即查询字符串
-                if flag == 0:
-                    flag = 1
-                    url = url + "?" + str(field_info.field_name) + "=" + str(value)
-                else:
-                    url = url + "&" + str(field_info.field_name) + "=" + str(value)
-            elif location == '2':
-                # 操作
-                pass
-            elif location == '3':
-                # 参数组成json字符串 ==> data
-                data = [].append(field_info.field_name)
-                pass
-    unit = testUnit(method, url, data)
-    response = unit.exec().text
-    reponses = json.loads(response)
-    for key in reponses:
-        resp.set(key, reponses.get(key))
+servers = spec.get("servers")
+for server in servers:
+    # 获取根路径
+    url = server.get("url")
+    # 解析API路径的其他部分和参数
+    paths = spec.get("paths")
+    project_id=''
+    for path in paths:
+        # completeUrl:根目录加资源路径，但是需要进一步处理
+        completeUrl = url[0:len(url)] + path
+        methods = paths.get(path)
+        for method in methods:
+            params = methods.get(method).get("parameters")
+            data = ''
+            flag = 0
+            if params:
+                for param in params:
+                    # 标识是不是第一次循环,query用来判断是否要加'?'
+                    inType = param.get('in')
+                    type = param.get('schema').get('type')
+                    name = param.get('name')
+                    value = fuzz(type)
+                    # 不同的in对应不同的数据
+                    if inType == 'path' and name == 'user_id':
+                        completeUrl = completeUrl.replace('{' + name + '}', str('lty'))
+                    elif inType == 'path' and name == 'id' and method == 'delete':
+                        delete_id=random.choice(project_ids)
+                        completeUrl = completeUrl.replace('{' + name + '}', str(delete_id))
+                        f_d.write("%d\n"%float(delete_id))
+                        lines = [l for l in open("D://pool.txt", "r") if l.find(delete_id) != 0]
+                        fd = open("D://pool.txt", "w")
+                        fd.writelines(lines)
+                        fd.close()
+                    elif inType == 'path' and name == 'id':
+                        completeUrl = completeUrl.replace('{' + name + '}', str(random.choice(project_ids)))
+                    elif inType == 'path':
+                        completeUrl = completeUrl.replace('{' + name + '}', str(value))
+                    elif inType == 'query':
+                        # url追加key1=value1&key2=value2到url后,即查询字符串
+                        if flag == 0:
+                            flag = 1
+                            completeUrl = completeUrl + "?" + str(name) + "=" + str(value)
+                        else:
+                            completeUrl = completeUrl + "&" + str(name) + "=" + str(value)
+                    elif inType == 'body':
+                        # 参数组成json字符串 ==> data
+                        pass
+
+            if method == 'post':
+                for i in range(5):
+                    values = str(value)+str(i)
+                    completeUrl = completeUrl.replace(str(value), str(values))
+                    unit = testUnit(method, completeUrl, i)
+                    response = unit.exec()
+                    if response.text != '[]':
+                        if response.text.replace('[', '').replace(']', '').split(':')[0].split('{')[1] == "\"id\"":
+                            project_id = response.text.replace('[', '').replace(']', '').split(':')[1].split(',')[0]
+                            f_p.write("%d\n"%float(project_id))
+                            project_ids.append(project_id)
+                            print(project_id)
+                    print(response.content)
+                f_p.close()
+                print(project_ids)
+
+            else:
+                unit = testUnit(method, completeUrl, data)
+                response = unit.exec()
+                print(response.content)

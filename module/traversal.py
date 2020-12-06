@@ -1,3 +1,5 @@
+import random
+
 from module.dep_analysis import get_dep_info
 from module.parse import parse
 import os.path
@@ -6,6 +8,16 @@ import os.path
 # api_info_list = parse(os.path.join(my_path, "../openapi/project.yaml"), 1.0)
 # matrix, weight_info_list = get_dep_info(api_info_list)
 # graph = matrix.tolist()
+# for n in range(len(graph)):
+#     for m in range(len(graph)):
+#         if graph[n][m] !=-1 and graph[m][n] != -1:
+#             list = [graph[n][m], graph[m][n]]
+#             k = random.choice(list)
+#             if graph[n][m] == k:
+#                 graph[n][m] = -1
+#             else:
+#                 graph[m][n] = -1
+
 
 # 记录拓扑排序顺序
 topology_order = []
@@ -33,8 +45,12 @@ def traversal(graph):
     for j in range(len(graph)):
         if graph[j] == end:
             out_degree_zero.append(j)
-    for n in out_degree_zero:
-        topology_visit(graph, n)
+
+    for m in range(len(out_degree_zero)):
+        k = random.choice(out_degree_zero)
+        out_degree_zero.remove(k)
+        topology_visit(graph, k)
+
     return topology_order
 
 
