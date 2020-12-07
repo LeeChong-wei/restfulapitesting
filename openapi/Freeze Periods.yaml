@@ -1,0 +1,196 @@
+openapi: 3.0.0
+info:
+  title: Environments
+  version: v4
+  description: An OpenAPI definition for the GitLab REST API.
+servers:
+  - url: 'http://10.177.74.168.com/api/v4'
+paths:
+  '/projects/{id}/freeze_periods':
+    get:
+      tags:
+        - Freeze Periods
+      parameters:
+        - name: id
+          schema:
+            oneOf:
+              - type: string
+              - type: integer
+          required: true
+          in: path
+          description: The ID or URL-encoded path of the project.
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    freeze_start:
+                      type: string
+                    freeze_end:
+                      type: string
+                    cron_timezone:
+                      type: string
+                    created_at:
+                      type: string
+                    updated_at:
+                      type: string
+    post:
+      tags:
+        - Freeze Periods
+      parameters:
+        - name: id
+          schema:
+            oneOf:
+              - type: string
+              - type: integer
+          required: true
+          in: path
+          description: The ID or URL-encoded path of the project.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                freeze_start:
+                  type: string
+                  description: Start of the Freeze Period in cron format.
+                freeze_end:
+                  type: string
+                  description: End of the Freeze Period in cron format.
+                cron_timezone:
+                  type: string
+                  description: >-
+                    The timezone for the cron fields, defaults to UTC if not
+                    provided.
+              required:
+                - freeze_start
+                - freeze_end
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  freeze_start:
+                    type: string
+                  freeze_end:
+                    type: string
+                  cron_timezone:
+                    type: string
+                  created_at:
+                    type: string
+                  updated_at:
+                    type: string
+  '/projects/{id}/freeze_periods/{freeze_period_id}':
+    get:
+      tags:
+        - Freeze Periods
+      parameters:
+        - name: id
+          schema:
+            oneOf:
+              - type: string
+              - type: integer
+          required: true
+          in: path
+          description: The ID or URL-encoded path of the project.
+        - name: freeze_period_id
+          schema:
+            type: string
+          required: true
+          in: path
+          description: The database ID of the Freeze Period.
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  freeze_start:
+                    type: string
+                  freeze_end:
+                    type: string
+                  cron_timezone:
+                    type: string
+                  created_at:
+                    type: string
+                  updated_at:
+                    type: string
+    delete:
+      tags:
+        - Freeze Periods
+      parameters:
+        - name: id
+          schema:
+            oneOf:
+              - type: string
+              - type: integer
+          required: true
+          in: path
+          description: The ID or URL-encoded path of the project.
+        - name: freeze_period_id
+          schema:
+            type: string
+          required: true
+          in: path
+          description: The database ID of the Freeze Period.
+      responses:
+        '200':
+          description: success
+  '/projects/{id}/freeze_periods/{tag_name}':
+    put:
+      tags:
+        - Freeze Periods
+      parameters:
+        - name: id
+          schema:
+            oneOf:
+              - type: string
+              - type: integer
+          required: true
+          in: path
+          description: The ID or URL-encoded path of the project.
+        - name: tag_name
+          schema:
+            oneOf:
+              - type: string
+              - type: integer
+          required: true
+          in: path
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  freeze_start:
+                    type: string
+                  freeze_end:
+                    type: string
+                  cron_timezone:
+                    type: string
+                  created_at:
+                    type: string
+                  updated_at:
+                    type: string

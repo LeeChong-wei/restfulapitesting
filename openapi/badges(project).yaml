@@ -1,0 +1,258 @@
+openapi: 3.0.0
+info:
+  title: badges (project)
+  version: v4
+  description: An OpenAPI definition for the GitLab REST API.
+servers:
+  - url: 'https://10.177.74.168.com/api/v4'
+paths:
+  '/projects/{id}/badges':
+    get:
+      tags:
+        - project badges
+      parameters:
+        - name: id
+          schema:
+            oneOf:
+              - type: string
+              - type: integer
+          required: true
+          in: path
+          description: >-
+            The ID or URL-encoded path of the project owned by the authenticated
+            user
+        - name: name
+          schema:
+            type: string
+          required: false
+          in: query
+          description: Name of the badges to return (case-sensitive).
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    id:
+                      type: integer
+                    link_url:
+                      type: string
+                    image_url:
+                      type: string
+                    rendered_link_url:
+                      type: string
+                    rendered_image_url:
+                      type: string
+                    kind:
+                      type: string
+    post:
+      tags:
+        - project badges
+      parameters:
+        - name: id
+          schema:
+            oneOf:
+              - type: string
+              - type: integer
+          required: true
+          in: path
+          description: >-
+            The ID or URL-encoded path of the project owned by the authenticated
+            user
+        - name: link_url
+          schema:
+            type: string
+          required: true
+          in: query
+          description: URL of the badge link
+        - name: image_url
+          schema:
+            type: string
+          required: true
+          in: query
+          description: URL of the badge image
+      responses:
+        '202':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  link_url:
+                    type: string
+                  image_url:
+                    type: string
+                  rendered_link_url:
+                    type: string
+                  rendered_image_url:
+                    type: string
+                  kind:
+                    type: string
+  '/projects/{id}/badges/{badge_id}':
+    get:
+      tags:
+        - project badges
+      parameters:
+        - name: id
+          schema:
+            oneOf:
+              - type: string
+              - type: integer
+          required: true
+          in: path
+          description: >-
+            The ID or URL-encoded path of the project owned by the authenticated
+            user
+        - name: badge_id
+          schema:
+            type: integer
+          required: true
+          in: path
+          description: The badge ID
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  link_url:
+                    type: string
+                  image_url:
+                    type: string
+                  rendered_link_url:
+                    type: string
+                  rendered_image_url:
+                    type: string
+                  kind:
+                    type: string
+    put:
+      tags:
+        - project badges
+      parameters:
+        - name: id
+          schema:
+            oneOf:
+              - type: string
+              - type: integer
+          required: true
+          in: path
+          description: >-
+            The ID or URL-encoded path of the project owned by the authenticated
+            user
+        - name: badge_id
+          schema:
+            type: integer
+          required: true
+          in: path
+          description: The badge ID
+        - name: link_url
+          schema:
+            type: string
+          required: false
+          in: query
+          description: URL of the badge link
+        - name: image_url
+          schema:
+            type: string
+          required: false
+          in: query
+          description: URL of the badge image
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  link_url:
+                    type: string
+                  image_url:
+                    type: string
+                  rendered_link_url:
+                    type: string
+                  rendered_image_url:
+                    type: string
+                  kind:
+                    type: string
+    delete:
+      tags:
+        - project badges
+      parameters:
+        - name: id
+          schema:
+            oneOf:
+              - type: string
+              - type: integer
+          required: true
+          in: path
+          description: >-
+            The ID or URL-encoded path of the project owned by the authenticated
+            user
+        - name: badge_id
+          schema:
+            type: integer
+          required: true
+          in: path
+          description: The badge ID
+      responses:
+        '200':
+          description: success
+  '/projects/{id}/badges/render':
+    get:
+      tags:
+        - project badges
+      parameters:
+        - name: id
+          schema:
+            oneOf:
+              - type: string
+              - type: integer
+          required: true
+          in: path
+          description: >-
+            The ID or URL-encoded path of the project owned by the authenticated
+            user
+        - name: link_url
+          schema:
+            type: string
+          required: true
+          in: query
+          description: URL of the badge link
+        - name: image_url
+          schema:
+            type: string
+          required: true
+          in: query
+          description: URL of the badge image
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  link_url:
+                    type: string
+                  image_url:
+                    type: string
+                  rendered_link_url:
+                    type: string
+                  rendered_image_url:
+                    type: string

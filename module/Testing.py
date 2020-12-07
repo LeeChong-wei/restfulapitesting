@@ -57,29 +57,52 @@ class testUnit:
         elif method == 'post':
             return requests.post(self.url, data)
         elif method == 'delete':
-            return requests.delete(self.url, data)
+            return requests.delete(self.url)
         elif method == 'put':
             return requests.put(self.url, data)
         else:
             print("NOT SUPPORTED " + method)
             return None
 
-# 获取依赖测试顺序, 去除环
-my_path = os.path.abspath(os.path.dirname(__file__))
-api_info_list = parse(os.path.join(my_path, "../openapi/project.yaml"), 1.0)
-matrix, weight_info_list = get_dep_info(api_info_list)
-graph = matrix.tolist()
-for n in range(len(graph)):
-    for m in range(len(graph)):
-        if graph[n][m] !=-1 and graph[m][n] != -1:
-            list = [graph[n][m], graph[m][n]]
-            k = random.choice(list)
-            if graph[n][m] == k:
-                graph[n][m] = -1
-            else:
-                graph[m][n] = -1
+#########################    获取依赖测试顺序, 去除环  #############################
 
-test_seq = traversal(graph)
+# my_path = os.path.abspath(os.path.dirname(__file__))
+# api_info_list = parse(os.path.join(my_path, "../openapi/project.yaml"), 1.0)
+# matrix, weight_info_list = get_dep_info(api_info_list)
+# graph = matrix.tolist()
+# # for n in range(len(graph)):
+# #     for m in range(len(graph)):
+# #         if graph[n][m] !=-1 and graph[m][n] != -1:
+# #             list = [graph[n][m], graph[m][n]]
+# #             k = random.choice(list)
+# #             if graph[n][m] == k:
+# #                 graph[n][m] = -1
+# #             else:
+# #                 graph[m][n] = -1
+#
+# test_seq = traversal(graph)
+# print(test_seq)
+########################   遍历json文件所有的key以及对应的value  ######################
+
+def json_txt(dic_json):
+    if isinstance(dic_json, list):
+        for dic in dic_json:
+            if isinstance(dic, dict):  # 判断是否是字典类型isinstance 返回True false
+                for key in dic:
+                    if isinstance(dic[key], dict):  # 如果dic_json[key]依旧是字典类型
+                        json_txt(dic[key])
+                        resp.lpush(str(key), str(dic[key]))
+                    else:
+                        resp.lpush(str(key), str(dic[key]))
+    else:
+        if isinstance(dic_json, dict):  # 判断是否是字典类型isinstance 返回True false
+            for key in dic_json:
+                if isinstance(dic_json[key], dict):  # 如果dic_json[key]依旧是字典类型
+                    json_txt(dic_json[key])
+                    resp.lpush(str(key), str(dic_json[key]))
+                else:
+                    resp.lpush(str(key), str(dic_json[key]))
+
 ########################   依照测试顺序进行测试   ######################################
 
 # 遍历获得测试api在api_info_list中的index,从而得到api_info
@@ -93,12 +116,20 @@ for i in range(0, len(test_seq)):
     # 用redis记录post和delete的id
     if method == 'post':
         for i in range(5):
+            url = api_info.path
             for field_info in api_info.req_param:
                 if field_info.require:
                     flag = '0'
                     location = field_info.location
-                    value = resp.lindex(field_info.field_name,
-                                        random.randint(0, len(field_info.field_name)))  # 从response的redis中根据name取对应value
+                    if resp.llen(str(field_info.field_name)) != 0:
+                        listl = []
+                        for i in range(resp.llen(str(field_info.field_name))): listl.append(i + 1)
+                        index = random.choice(listl)
+                        valu = resp.lindex(str(field_info.field_name),
+                                           random.choice(str(index)))  # 从response的redis中根据name取对应value
+                        value = str(valu, encoding="utf-8")
+                    else:
+                        value = None
                     if field_info.field_name == 'user_id':
                         value = 4
                     if field_info.fuzz:
@@ -122,31 +153,74 @@ for i in range(0, len(test_seq)):
                         pass
                     elif location == 3:
                         # 参数组成json字符串 ==> data
-                        data = [].append(field_info.field_name)
+                        data = [].append(resp.get(field_info.field_name))
                         pass
             post.lpush('api_id_p', api_info.api_id)
             unit = testUnit(method, url, data)
             response = unit.exec().text
             print(response)
             reponses = json.loads(response)
-            for key in reponses:
-                resp.lpush(key, reponses.get(key))
+            json_txt(reponses)
     elif method == 'delete':
+        for field_info in api_info.req_param:
+            if field_info.require:
+                flag = '0'
+                location = field_info.location
+                if resp.llen(str(field_info.field_name)) != 0:
+                    listl = []
+                    for i in range(resp.llen(str(field_info.field_name))): listl.append(i + 1)
+                    index = random.choice(listl)
+                    valu = resp.lindex(str(field_info.field_name),
+                                        random.choice(str(index)))  # 从response的redis中根据name取对应value
+                    value = str(valu, encoding="utf-8")
+                else:
+                    value = None
+                if field_info.field_name == 'user_id':
+                    value = 4
+                if field_info.fuzz:
+                    # fuzz处理
+                    if field_info.field_name == 'user_id':
+                        type = type(field_info.field_name)
+                        value = fuzz(type)
+                    continue
+                # 不同的in对应不同的数据   location：0-path,1-query,2-header,3-body
+                if location == 0:
+                    url = url.replace('{' + field_info.field_name + '}', str(value))
+                elif location == 1:
+                    # url追加key1=value1&key2=value2到url后,即查询字符串
+                    if flag == 0:
+                        flag = 1
+                        url = url + "?" + str(field_info.field_name) + "=" + str(value)
+                    else:
+                        url = url + "&" + str(field_info.field_name) + "=" + str(value)
+                elif location == 2:
+                    # 操作
+                    pass
+                elif location == 3:
+                    # 参数组成json字符串 ==> data
+                    data = [].append(resp.get(field_info.field_name))
+                    pass
         post.lrem('api_id_p', api_info.api_id, 0)
         delete.lpush('api_id_d', api_info.api_id)
         unit = testUnit(method, url, data)
         response = unit.exec().text
         print(response)
         reponses = json.loads(response)
-        for key in reponses:
-            resp.lpush(key, reponses.get(key))
+        json_txt(reponses)
     else:
         for field_info in api_info.req_param:
             if field_info.require:
                 flag = '0'
                 location = field_info.location
-                value = resp.lindex(field_info.field_name,
-                                    random.randint(0, len(field_info.field_name)))  # 从response的redis中根据name取对应value
+                if resp.llen(str(field_info.field_name)) != 0:
+                    listl = []
+                    for i in range(resp.llen(str(field_info.field_name))): listl.append(i + 1)
+                    index = random.choice(listl)
+                    value = resp.lindex(str(field_info.field_name),
+                                        random.choice(str(index)))  # 从response的redis中根据name取对应value
+                    value = str(value, encoding="utf-8")
+                else:
+                    value = None
                 if field_info.field_name == 'user_id':
                     value = 4
                 if field_info.fuzz:
@@ -176,6 +250,10 @@ for i in range(0, len(test_seq)):
         response = unit.exec().text
         print(response)
         reponses = json.loads(response)
-        for key in reponses:
-            resp.lpush(key, reponses.get(key))
+        json_txt(reponses)
 
+
+# keys= resp.keys()
+# for i in keys:
+#     print(i)
+#     print(resp[i])

@@ -4,7 +4,7 @@ info:
   version: v4
   description: An OpenAPI definition for the GitLab REST API.
 servers:
-  - url: 'https://gitlab.com/api/v4'
+  - url: 'http://10.177.74.168/api/v4'
 paths:
   /projects:
     get:
@@ -519,7 +519,7 @@ paths:
         - name: name
           schema:
             type: string
-          required: false
+          required: true
           in: query
           description: The name of the new project. Equals path if not provided.
         - name: namespace_id

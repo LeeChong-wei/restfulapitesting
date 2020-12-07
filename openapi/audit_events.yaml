@@ -1,0 +1,374 @@
+openapi: 3.0.0
+info:
+  title: audit events
+  version: v4
+  description: An OpenAPI definition for the GitLab REST API.
+servers:
+  - url: 'https://10.177.74.168/api/v4'
+paths:
+  /audit_events:
+    get:
+      tags:
+        - audit events
+      parameters:
+        - name: created_after
+          schema:
+            type: string
+          required: false
+          in: query
+          description: ' Return audit events created on or after the given time. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
+        - name: created_before
+          schema:
+            type: string
+          required: false
+          in: query
+          description: >-
+            Return audit events created on or before the given time. Format: ISO
+            8601 YYYY-MM-DDTHH:MM:SSZ
+        - name: entity_type
+          schema:
+            type: string
+          required: false
+          in: query
+          description: >-
+            Return audit events for the given entity type. Valid values are:
+            User, Group, or Project.
+        - name: entity_id
+          schema:
+            type: integer
+          required: false
+          in: query
+          description: >-
+            Return audit events for the given entity ID. Requires entity_type
+            attribute to be present.
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    author_id:
+                      type: integer
+                    entity_id:
+                      type: integer
+                    entity_type:
+                      type: string
+                    details:
+                      type: object
+                      properties:
+                        custom_message:
+                          type: string
+                        author_name:
+                          type: string
+                        target_id:
+                          type: string
+                        target_type:
+                          type: string
+                        target_details:
+                          type: string
+                        ip_address:
+                          type: string
+                        entity_path:
+                          type: string
+                    created_at:
+                      type: string
+  '/audit_events/{id}':
+    get:
+      tags:
+        - audit events
+      parameters:
+        - name: id
+          schema:
+            type: integer
+          required: true
+          description: The ID of the audit event
+          in: path
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  author_id:
+                    type: integer
+                  entity_id:
+                    type: integer
+                  entity_type:
+                    type: string
+                  details:
+                    type: object
+                    properties:
+                      custom_message:
+                        type: string
+                      author_name:
+                        type: string
+                      target_id:
+                        type: string
+                      target_type:
+                        type: string
+                      target_details:
+                        type: string
+                      ip_address:
+                        type: string
+                      entity_path:
+                        type: string
+                  created_at:
+                    type: string
+  '/groups/{id}/audit_events':
+    get:
+      tags:
+        - audit events
+      parameters:
+        - name: id
+          schema:
+            oneOf:
+              - type: integer
+              - type: string
+          required: true
+          in: path
+          description: The ID or URL-encoded path of the group
+        - name: created_after
+          schema:
+            type: string
+          required: false
+          in: query
+          description: >-
+            Return group audit events created on or after the given time.
+            Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ
+        - name: created_before
+          schema:
+            type: string
+          required: false
+          in: query
+          description: >-
+            Return group audit events created on or before the given time.
+            Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    author_id:
+                      type: integer
+                    entity_id:
+                      type: integer
+                    entity_type:
+                      type: string
+                    details:
+                      type: object
+                      properties:
+                        custom_message:
+                          type: string
+                        author_name:
+                          type: string
+                        target_id:
+                          type: string
+                        target_type:
+                          type: string
+                        target_details:
+                          type: string
+                        ip_address:
+                          type: string
+                        entity_path:
+                          type: string
+                    created_at:
+                      type: string
+  '/groups/{id}/audit_events/{audit_event_id}':
+    get:
+      tags:
+        - audit events
+      parameters:
+        - name: id
+          schema:
+            oneOf:
+              - type: integer
+              - type: string
+          required: true
+          in: path
+          description: The ID or URL-encoded path of the group
+        - name: audit_event_id
+          schema:
+            type: integer
+          in: path
+          required: true
+          description: The ID of the audit event
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  author_id:
+                    type: integer
+                  entity_id:
+                    type: integer
+                  entity_type:
+                    type: string
+                  details:
+                    type: object
+                    properties:
+                      custom_message:
+                        type: string
+                      author_name:
+                        type: string
+                      target_id:
+                        type: string
+                      target_type:
+                        type: string
+                      target_details:
+                        type: string
+                      ip_address:
+                        type: string
+                      entity_path:
+                        type: string
+                  created_at:
+                    type: string
+  '/projects/{id}/audit_events':
+    get:
+      tags:
+        - audit events
+      parameters:
+        - name: id
+          schema:
+            oneOf:
+              - type: integer
+              - type: string
+          required: true
+          in: path
+          description: The ID or URL-encoded path of the project
+        - name: created_after
+          schema:
+            type: string
+          required: false
+          in: query
+          description: >-
+            Return project audit events created on or after the given time.
+            Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ
+        - name: created_before
+          schema:
+            type: string
+          required: false
+          in: query
+          description: >-
+            Return project audit events created on or before the given time.
+            Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    author_id:
+                      type: integer
+                    entity_id:
+                      type: integer
+                    entity_type:
+                      type: string
+                    details:
+                      type: object
+                      properties:
+                        change:
+                          type: string
+                        from:
+                          type: string
+                        to:
+                          type: string
+                        author_name:
+                          type: string
+                        target_id:
+                          type: integer
+                        target_type:
+                          type: string
+                        target_details:
+                          type: string
+                        ip_address:
+                          type: string
+                        entity_path:
+                          type: string
+                    created_at:
+                      type: string
+  '/projects/{id}/audit_events/{audit_event_id}':
+    get:
+      tags:
+        - audit events
+      parameters:
+        - name: id
+          schema:
+            oneOf:
+              - type: integer
+              - type: string
+          in: path
+          required: true
+          description: The ID or URL-encoded path of the project
+        - name: audit_event_id
+          schema:
+            type: integer
+          required: true
+          in: path
+          description: The ID of the audit event
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  author_id:
+                    type: integer
+                  entity_id:
+                    type: integer
+                  entity_type:
+                    type: string
+                  details:
+                    type: object
+                    properties:
+                      change:
+                        type: string
+                      from:
+                        type: string
+                      to:
+                        type: string
+                      author_name:
+                        type: string
+                      target_id:
+                        type: integer
+                      target_type:
+                        type: string
+                      target_details:
+                        type: string
+                      ip_address:
+                        type: string
+                      entity_path:
+                        type: string
+                  created_at:
+                    type: string

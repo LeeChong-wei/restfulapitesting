@@ -1,0 +1,127 @@
+openapi: 3.0.0
+info:
+  title: Appearance
+  version: v4
+  description: An OpenAPI definition for the GitLab REST API.
+servers:
+  - url: 'https://10.177.74.168.com/api/v4'
+paths:
+  /application/appearance:
+    get:
+      tags:
+        - Appearance
+      responses:
+        '200':
+          description: success
+          content:
+            multipart/form-data:
+              schema:
+                type: object
+                properties:
+                  title:
+                    type: string
+                  description:
+                    type: string
+                  logo:
+                    type: string
+                    format: mixed
+                  header_logo:
+                    type: string
+                    format: mixed
+                  favicon:
+                    type: string
+                    format: mixed
+                  new_project_guidelines:
+                    type: string
+                  profile_image_guidelines:
+                    type: string
+                  header_message:
+                    type: string
+                  footer_message:
+                    type: string
+                  message_background_color:
+                    type: string
+                  message_font_color:
+                    type: string
+                  email_header_and_footer_enabled:
+                    type: boolean
+    put:
+      tags:
+        - Appearance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: Instance title on the sign in / sign up page
+                description:
+                  type: string
+                  description: Markdown text shown on the sign in / sign up page
+                logo:
+                  type: object
+                  description: >-
+                    Instance image used on the sign in / sign up page. See
+                    Change logo
+                header_logo:
+                  type: object
+                  description: Instance image used for the main navigation bar
+                favicon:
+                  type: object
+                  description: Instance favicon in .ico or .png format
+                new_project_guidelines:
+                  type: string
+                  description: Markdown text shown on the new project page
+                profile_image_guidelines:
+                  type: string
+                  description: Markdown text shown on the profile page below Public Avatar
+                header_message:
+                  type: string
+                  description: Message within the system header bar
+                footer_message:
+                  type: string
+                  description: Message within the system footer bar
+                message_background_color:
+                  type: string
+                  description: Background color for the system header / footer bar
+                message_font_color:
+                  type: string
+                  description: Font color for the system header / footer bar
+                email_header_and_footer_enabled:
+                  type: boolean
+                  description: Add header and footer to all outgoing emails if enabled
+      responses:
+        '202':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  title:
+                    type: string
+                  description:
+                    type: string
+                  logo:
+                    type: string
+                  header_logo:
+                    type: string
+                  favicon:
+                    type: string
+                  new_project_guidelines:
+                    type: string
+                  profile_image_guidelines:
+                    type: string
+                  header_message:
+                    type: string
+                  footer_message:
+                    type: string
+                  message_background_color:
+                    type: string
+                  message_font_color:
+                    type: string
+                  email_header_and_footer_enabled:
+                    type: boolean

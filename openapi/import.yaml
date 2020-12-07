@@ -1,0 +1,101 @@
+openapi: 3.0.0
+info:
+  title: Environments
+  version: v4
+  description: An OpenAPI definition for the GitLab REST API.
+servers:
+  - url: 'https://10.177.74.168.com/api/v4'
+paths:
+  /import/github:
+    post:
+      tags:
+        - Import
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                personal_access_token:
+                  type: string
+                  description: GitHub personal access token
+                repo_id:
+                  type: integer
+                  description: GitHub repository ID
+                new_name:
+                  type: string
+                  description: New repository name
+                target_namespace:
+                  type: string
+                  description: >-
+                    Namespace to import repository into. Supports subgroups like
+                    /namespace/subgroup.
+                github_hostname:
+                  type: string
+                  description: >-
+                    Custom GitHub enterprise hostname. Defaults to GitHub.com if
+                    github_hostname is not set.
+              required:
+                - personal_access_token
+                - repo_id
+                - target_namespace
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  full_path:
+                    type: string
+                  full_name:
+                    type: string
+  /import/bitbucket_server:
+    post:
+      tags:
+        - Import
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                bitbucket_server_url:
+                  type: string
+                  description: Bitbucket Server URL
+                bitbucket_server_username:
+                  type: string
+                  description: Bitbucket Server Username
+                personal_access_token:
+                  type: string
+                  description: Bitbucket Server personal access token/password
+                bitbucket_server_project:
+                  type: string
+                  description: Bitbucket Project Key
+                bitbucket_server_repo:
+                  type: string
+                  description: Bitbucket Repository Name
+                new_name:
+                  type: string
+                  description: New repository name
+                target_namespace:
+                  type: string
+                  description: >-
+                    Namespace to import repository into. Supports subgroups like
+                    /namespace/subgroup
+              required:
+                - bitbucket_server_url
+                - bitbucket_server_username
+                - personal_access_token
+                - bitbucket_server_project
+                - bitbucket_server_repo
+      responses:
+        '200':
+          description: success

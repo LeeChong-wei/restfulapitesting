@@ -1,0 +1,485 @@
+openapi: 3.0.0
+info:
+  title: clusters
+  version: v4
+  description: An OpenAPI definition for the GitLab REST API.
+servers:
+  - url: 'https://10.177.74.168.com/api/v4'
+paths:
+  '/groups/{id}/clusters':
+    get:
+      tags:
+        - group clusters
+      parameters:
+        - name: id
+          schema:
+            oneOf:
+              - type: string
+              - type: integer
+          required: true
+          in: path
+          description: The ID or URL-encoded path of the group
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    domain:
+                      type: string
+                    created_at:
+                      type: string
+                    managed:
+                      type: boolean
+                    enabled:
+                      type: boolean
+                    provider_type:
+                      type: string
+                    platform_type:
+                      type: string
+                    environment_scope:
+                      type: string
+                    cluster_type:
+                      type: string
+                    user:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        username:
+                          type: string
+                        state:
+                          type: string
+                        avatar_url:
+                          type: string
+                        web_url:
+                          type: string
+                    platform_kubernetes:
+                      type: object
+                      properties:
+                        api_url:
+                          type: string
+                        authorization_type:
+                          type: string
+                        ca_cert:
+                          type: string
+                    management_project:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        description:
+                          type: string
+                        name:
+                          type: string
+                        name_with_namespace:
+                          type: string
+                        path:
+                          type: string
+                        path_with_namespace:
+                          type: string
+                        created_at:
+                          type: string
+  '/groups/{id}/clusters/{cluster_id}':
+    get:
+      tags:
+        - group clusters
+      parameters:
+        - name: id
+          schema:
+            oneOf:
+              - type: string
+              - type: integer
+          required: true
+          in: path
+          description: The ID or URL-encoded path of the group
+        - name: cluster_id
+          schema:
+            type: integer
+          required: true
+          in: path
+          description: The ID of the cluster
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  domain:
+                    type: string
+                  created_at:
+                    type: string
+                  managed:
+                    type: boolean
+                  enabled:
+                    type: boolean
+                  provider_type:
+                    type: string
+                  platform_type:
+                    type: string
+                  environment_scope:
+                    type: string
+                  cluster_type:
+                    type: string
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      username:
+                        type: string
+                      state:
+                        type: string
+                      avatar_url:
+                        type: string
+                      web_url:
+                        type: string
+                  platform_kubernetes:
+                    type: object
+                    properties:
+                      api_url:
+                        type: string
+                      authorization_type:
+                        type: string
+                      ca_cert:
+                        type: string
+                  management_project:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      description:
+                        type: string
+                      name:
+                        type: string
+                      name_with_namespace:
+                        type: string
+                      path:
+                        type: string
+                      path_with_namespace:
+                        type: string
+                      created_at:
+                        type: string
+                  group:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      web_url:
+                        type: string
+    put:
+      tags:
+        - group clusters
+      parameters:
+        - name: id
+          schema:
+            oneOf:
+              - type: string
+              - type: integer
+          required: true
+          in: path
+          description: The ID or URL-encoded path of the group
+        - name: cluster_id
+          schema:
+            type: integer
+          required: true
+          in: path
+          description: The ID of the cluster
+        - name: name
+          schema:
+            type: string
+          required: false
+          in: query
+          description: The name of the cluster
+        - name: domain
+          schema:
+            type: string
+          required: false
+          in: query
+          description: The base domain of the cluster
+        - name: management_project_id
+          schema:
+            type: integer
+          required: false
+          in: query
+          description: The ID of the management project for the cluster
+        - name: enabled
+          schema:
+            type: boolean
+          required: false
+          in: query
+          description: Determines if cluster is active or not
+        - name: managed
+          schema:
+            type: boolean
+          required: false
+          in: query
+          description: >-
+            Determines if GitLab manages namespaces and service accounts for
+            this cluster
+        - name: 'platform_kubernetes_attributes[api_url]'
+          schema:
+            type: string
+          required: false
+          in: query
+          description: The URL to access the Kubernetes API
+        - name: 'platform_kubernetes_attributes[token]'
+          schema:
+            type: string
+          required: false
+          in: query
+          description: The token to authenticate against Kubernetes
+        - name: 'platform_kubernetes_attributes[ca_cert]'
+          schema:
+            type: string
+          required: false
+          in: query
+          description: >-
+            TLS certificate. Required if API is using a self-signed TLS
+            certificate.
+        - name: environment_scope
+          schema:
+            type: string
+          required: false
+          in: query
+          description: The associated environment to the cluster
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  domain:
+                    type: string
+                  created_at:
+                    type: string
+                  managed:
+                    type: boolean
+                  enabled:
+                    type: boolean
+                  provider_type:
+                    type: string
+                  platform_type:
+                    type: string
+                  environment_scope:
+                    type: string
+                  cluster_type:
+                    type: string
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      username:
+                        type: string
+                      state:
+                        type: string
+                      avatar_url:
+                        type: string
+                      web_url:
+                        type: string
+                  platform_kubernetes:
+                    type: object
+                    properties:
+                      api_url:
+                        type: string
+                      authorization_type:
+                        type: string
+                      ca_cert:
+                        type: string
+                  management_project:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      description:
+                        type: string
+                      name:
+                        type: string
+                      name_with_namespace:
+                        type: string
+                      path:
+                        type: string
+                      path_with_namespace:
+                        type: string
+                      created_at:
+                        type: string
+                  group:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      web_url:
+                        type: string
+    delete:
+      tags:
+        - group clusters
+      parameters:
+        - name: id
+          schema:
+            oneOf:
+              - type: string
+              - type: integer
+          required: true
+          in: path
+          description: The ID or URL-encoded path of the group
+        - name: cluster_id
+          schema:
+            type: integer
+          required: true
+          in: path
+          description: The ID of the cluster
+      responses:
+        '200':
+          description: success
+  '/groups/{id}/clusters/user':
+    post:
+      tags:
+        - group clusters
+      parameters:
+        - name: id
+          schema:
+            oneOf:
+              - type: string
+              - type: integer
+          required: true
+          in: path
+          description: The ID or URL-encoded path of the group
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the cluster
+                domain:
+                  type: string
+                  description: The base domain of the cluster
+                management_project_id:
+                  type: integer
+                  description: The ID of the management project for the cluster
+                enabled:
+                  type: boolean
+                  description: 'Determines if cluster is active or not, defaults to true'
+                managed:
+                  type: boolean
+                  description: >-
+                    Determines if GitLab manages namespaces and service accounts
+                    for this cluster. Defaults to true
+                'platform_kubernetes_attributes[api_url]':
+                  type: string
+                  description: The URL to access the Kubernetes API
+                'platform_kubernetes_attributes[token]':
+                  type: string
+                  description: The token to authenticate against Kubernetes
+                'platform_kubernetes_attributes[ca_cert]':
+                  type: string
+                  description: >-
+                    TLS certificate. Required if API is using a self-signed TLS
+                    certificate.
+                'platform_kubernetes_attributes[authorization_type]':
+                  type: string
+                  description: >-
+                    The cluster authorization type: rbac, abac or
+                    unknown_authorization. Defaults to rbac.
+                environment_scope:
+                  type: string
+                  description: The associated environment to the cluster. Defaults to *
+              required:
+                - name
+                - 'platform_kubernetes_attributes[api_url]'
+                - 'platform_kubernetes_attributes[token]'
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  created_at:
+                    type: string
+                  managed:
+                    type: boolean
+                  enabled:
+                    type: boolean
+                  provider_type:
+                    type: string
+                  platform_type:
+                    type: string
+                  environment_scope:
+                    type: string
+                  cluster_type:
+                    type: string
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      username:
+                        type: string
+                      state:
+                        type: string
+                      avatar_url:
+                        type: string
+                      web_url:
+                        type: string
+                  platform_kubernetes:
+                    type: object
+                    properties:
+                      api_url:
+                        type: string
+                      authorization_type:
+                        type: string
+                      ca_cert:
+                        type: string
+                  management_project:
+                    type: string
+                  group:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      web_url:
+                        type: string

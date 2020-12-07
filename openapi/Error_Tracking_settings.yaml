@@ -1,0 +1,73 @@
+openapi: 3.0.0
+info:
+  title: Environments
+  version: v4
+  description: An OpenAPI definition for the GitLab REST API.
+servers:
+  - url: 'https://10.177.74.168.com/api/v4'
+paths:
+  '/projects/{id}/error_tracking/settings':
+    get:
+      tags:
+        - Error Tracking settings
+      parameters:
+        - name: id
+          schema:
+            type: integer
+          required: true
+          in: path
+          description: >-
+            The ID or URL-encoded path of the project owned by the authenticated
+            user
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  active:
+                    type: boolean
+                  project_name:
+                    type: string
+                  sentry_external_url:
+                    type: string
+                  api_url:
+                    type: string
+    patch:
+      tags:
+        - Error Tracking settings
+      parameters:
+        - name: id
+          schema:
+            type: integer
+          required: true
+          in: path
+          description: >-
+            The ID or URL-encoded path of the project owned by the authenticated
+            user.
+        - name: active
+          schema:
+            type: boolean
+          required: true
+          in: query
+          description: >-
+            Pass true to enable the already configured error tracking settings
+            or false to disable it.
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  active:
+                    type: boolean
+                  project_name:
+                    type: string
+                  sentry_external_url:
+                    type: string
+                  api_url:
+                    type: string

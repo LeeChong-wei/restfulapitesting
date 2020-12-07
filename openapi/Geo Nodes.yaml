@@ -1,0 +1,842 @@
+openapi: 3.0.0
+info:
+  title: Environments
+  version: v4
+  description: An OpenAPI definition for the GitLab REST API.
+servers:
+  - url: 'https://10.177.74.168.com/api/v4'
+paths:
+  /geo_nodes:
+    post:
+      tags:
+        - Geo Nodes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                primary:
+                  type: boolean
+                  description: >-
+                    Specifying whether this node will be primary. Defaults to
+                    false.
+                enabled:
+                  type: boolean
+                  description: >-
+                    Flag indicating if the Geo node is enabled. Defaults to
+                    true.
+                name:
+                  type: string
+                  description: >-
+                    The unique identifier for the Geo node. Must match
+                    geo_node_name if it is set in gitlab.rb, otherwise it must
+                    match external_url
+                url:
+                  type: string
+                  description: The user-facing URL for the Geo node.
+                internal_url:
+                  type: string
+                  description: >-
+                    The URL defined on the primary node that secondary nodes
+                    should use to contact it. Returns url if not set.
+                files_max_capacity:
+                  type: integer
+                  description: >-
+                    Control the maximum concurrency of LFS/attachment backfill
+                    for this secondary node. Defaults to 10.
+                repos_max_capacity:
+                  type: integer
+                  description: >-
+                    Control the maximum concurrency of repository backfill for
+                    this secondary node. Defaults to 25.
+                verification_max_capacity:
+                  type: integer
+                  description: >-
+                    Control the maximum concurrency of repository verification
+                    for this node. Defaults to 100.
+                container_repositories_max_capacity:
+                  type: integer
+                  description: >-
+                    Control the maximum concurrency of container repository sync
+                    for this node. Defaults to 10.
+                sync_object_storage:
+                  type: boolean
+                  description: >-
+                    Flag indicating if the secondary Geo node will replicate
+                    blobs in Object Storage. Defaults to false.
+                selective_sync_type:
+                  type: string
+                  description: >-
+                    Limit syncing to only specific groups or shards. Valid
+                    values: "namespaces", "shards", or null.
+                selective_sync_shards:
+                  type: array
+                  items:
+                    type: object
+                  description: >-
+                    The repository storage for the projects synced if
+                    selective_sync_type == shards.
+                selective_sync_namespace_ids:
+                  type: array
+                  items:
+                    type: integer
+                  description: >-
+                    The IDs of groups that should be synced, if
+                    selective_sync_type == namespaces.
+                minimum_reverification_interval:
+                  type: integer
+                  description: >-
+                    The interval (in days) in which the repository verification
+                    is valid. Once expired, it will be reverified. This has no
+                    effect when set on a secondary node.
+              required:
+                - name
+                - url
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  url:
+                    type: string
+                  internal_url:
+                    type: string
+                  primary:
+                    type: boolean
+                  enabled:
+                    type: boolean
+                  current:
+                    type: boolean
+                  files_max_capacity:
+                    type: integer
+                  repos_max_capacity:
+                    type: integer
+                  verification_max_capacity:
+                    type: integer
+                  selective_sync_type:
+                    type: string
+                  selective_sync_shards:
+                    type: array
+                    items:
+                      type: object
+                  selective_sync_namespace_ids:
+                    type: array
+                    items:
+                      type: integer
+                  minimum_reverification_interval:
+                    type: integer
+                  container_repositories_max_capacity:
+                    type: integer
+                  sync_object_storage:
+                    type: boolean
+                  clone_protocol:
+                    type: string
+                  web_edit_url:
+                    type: string
+                  web_geo_projects_url:
+                    type: string
+                  _links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                      status:
+                        type: string
+                      repair:
+                        type: string
+    get:
+      tags:
+        - Geo Nodes
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    url:
+                      type: string
+                    internal_url:
+                      type: string
+                    primary:
+                      type: boolean
+                    enabled:
+                      type: boolean
+                    current:
+                      type: boolean
+                    files_max_capacity:
+                      type: integer
+                    repos_max_capacity:
+                      type: integer
+                    container_repositories_max_capacity:
+                      type: integer
+                    verification_max_capacity:
+                      type: integer
+                    selective_sync_type:
+                      type: string
+                    selective_sync_shards:
+                      type: array
+                      items:
+                        type: object
+                    selective_sync_namespace_ids:
+                      type: array
+                      items:
+                        type: integer
+                    minimum_reverification_interval:
+                      type: integer
+                    clone_protocol:
+                      type: string
+                    web_edit_url:
+                      type: string
+                    _links:
+                      type: object
+                      properties:
+                        self:
+                          type: string
+                        status:
+                          type: string
+                        repair:
+                          type: string
+  '/geo_nodes/{id}':
+    get:
+      tags:
+        - Geo Nodes
+      parameters:
+        - name: id
+          schema:
+            type: integer
+          required: true
+          in: path
+          description: The ID of the Geo node.
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  url:
+                    type: string
+                  internal_url:
+                    type: string
+                  primary:
+                    type: boolean
+                  enabled:
+                    type: boolean
+                  current:
+                    type: boolean
+                  files_max_capacity:
+                    type: integer
+                  repos_max_capacity:
+                    type: integer
+                  container_repositories_max_capacity:
+                    type: integer
+                  verification_max_capacity:
+                    type: integer
+                  selective_sync_type:
+                    type: string
+                  selective_sync_shards:
+                    type: array
+                    items:
+                      type: object
+                  selective_sync_namespace_ids:
+                    type: array
+                    items:
+                      type: integer
+                  minimum_reverification_interval:
+                    type: integer
+                  clone_protocol:
+                    type: string
+                  web_edit_url:
+                    type: string
+                  _links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                      status:
+                        type: string
+                      repair:
+                        type: string
+    put:
+      tags:
+        - Geo Nodes
+      parameters:
+        - name: id
+          schema:
+            type: integer
+          required: true
+          in: path
+          description: The ID of the Geo node.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                enabled:
+                  type: boolean
+                  description: Flag indicating if the Geo node is enabled.
+                name:
+                  type: string
+                  description: >-
+                    The unique identifier for the Geo node. Must match
+                    geo_node_name if it is set in gitlab.rb, otherwise it must
+                    match external_url.
+                url:
+                  type: string
+                  description: The user-facing URL of the Geo node.
+                internal_url:
+                  type: string
+                  description: >-
+                    The URL defined on the primary node that secondary nodes
+                    should use to contact it. Returns url if not set.
+                files_max_capacity:
+                  type: integer
+                  description: >-
+                    Control the maximum concurrency of LFS/attachment backfill
+                    for this secondary node.
+                repos_max_capacity:
+                  type: integer
+                  description: >-
+                    Control the maximum concurrency of repository backfill for
+                    this secondary node.
+                verification_max_capacity:
+                  type: integer
+                  description: >-
+                    Control the maximum concurrency of verification for this
+                    node.
+                container_repositories_max_capacity:
+                  type: integer
+                  description: >-
+                    Control the maximum concurrency of container repository sync
+                    for this node.
+                sync_object_storage:
+                  type: boolean
+                  description: >-
+                    Flag indicating if the secondary Geo node will replicate
+                    blobs in Object Storage.
+                selective_sync_type:
+                  type: string
+                  description: >-
+                    Limit syncing to only specific groups or shards. Valid
+                    values: "namespaces", "shards", or null.
+                selective_sync_shards:
+                  type: array
+                  items:
+                    type: object
+                  description: >-
+                    The repository storage for the projects synced if
+                    selective_sync_type == shards.
+                selective_sync_namespace_ids:
+                  type: array
+                  items:
+                    type: integer
+                  description: >-
+                    The IDs of groups that should be synced, if
+                    selective_sync_type == namespaces.
+                minimum_reverification_interval:
+                  type: integer
+                  description: >-
+                    The interval (in days) in which the repository verification
+                    is valid. Once expired, it will be reverified. This has no
+                    effect when set on a secondary node.
+              required:
+                - name
+                - url
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  url:
+                    type: string
+                  internal_url:
+                    type: string
+                  primary:
+                    type: boolean
+                  enabled:
+                    type: boolean
+                  current:
+                    type: boolean
+                  files_max_capacity:
+                    type: integer
+                  repos_max_capacity:
+                    type: integer
+                  container_repositories_max_capacity:
+                    type: integer
+                  verification_max_capacity:
+                    type: integer
+                  selective_sync_type:
+                    type: string
+                  selective_sync_shards:
+                    type: array
+                    items:
+                      type: object
+                  selective_sync_namespace_ids:
+                    type: array
+                    items:
+                      type: integer
+                  minimum_reverification_interval:
+                    type: integer
+                  sync_object_storage:
+                    type: boolean
+                  clone_protocol:
+                    type: string
+                  web_edit_url:
+                    type: string
+                  web_geo_projects_url:
+                    type: string
+                  _links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                      status:
+                        type: string
+                      repair:
+                        type: string
+    delete:
+      tags:
+        - Geo Nodes
+      parameters:
+        - name: id
+          schema:
+            type: integer
+          required: true
+          in: path
+          description: The ID of the Geo node.
+      responses:
+        '200':
+          description: success
+  '/geo_nodes/{id}/repair':
+    post:
+      tags:
+        - Geo Nodes
+      parameters:
+        - name: id
+          schema:
+            type: integer
+          required: true
+          in: path
+          description: The ID of the Geo node.
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  url:
+                    type: string
+                  internal_url:
+                    type: string
+                  primary:
+                    type: boolean
+                  enabled:
+                    type: boolean
+                  current:
+                    type: boolean
+                  files_max_capacity:
+                    type: integer
+                  repos_max_capacity:
+                    type: integer
+                  container_repositories_max_capacity:
+                    type: integer
+                  verification_max_capacity:
+                    type: integer
+                  clone_protocol:
+                    type: string
+                  web_edit_url:
+                    type: string
+                  _links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                      status:
+                        type: string
+                      repair:
+                        type: string
+  /geo_nodes/status:
+    get:
+      tags:
+        - Geo Nodes
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    geo_node_id:
+                      type: integer
+                    healthy:
+                      type: boolean
+                    health:
+                      type: string
+                    health_status:
+                      type: string
+                    missing_oauth_application:
+                      type: boolean
+                    attachments_count:
+                      type: integer
+                    attachments_synced_count:
+                      type: string
+                    attachments_failed_count:
+                      type: string
+                    attachments_synced_missing_on_primary_count:
+                      type: integer
+                    attachments_synced_in_percentage:
+                      type: string
+                    db_replication_lag_seconds:
+                      type: string
+                    lfs_objects_count:
+                      type: integer
+                    lfs_objects_synced_count:
+                      type: string
+                    lfs_objects_failed_count:
+                      type: string
+                    lfs_objects_synced_missing_on_primary_count:
+                      type: integer
+                    lfs_objects_synced_in_percentage:
+                      type: string
+                    job_artifacts_count:
+                      type: integer
+                    job_artifacts_synced_count:
+                      type: string
+                    job_artifacts_failed_count:
+                      type: string
+                    job_artifacts_synced_missing_on_primary_count:
+                      type: integer
+                    job_artifacts_synced_in_percentage:
+                      type: string
+                    container_repositories_count:
+                      type: integer
+                    container_repositories_synced_count:
+                      type: string
+                    container_repositories_failed_count:
+                      type: string
+                    container_repositories_synced_in_percentage:
+                      type: string
+                    design_repositories_count:
+                      type: integer
+                    design_repositories_synced_count:
+                      type: string
+                    design_repositories_failed_count:
+                      type: string
+                    design_repositories_synced_in_percentage:
+                      type: string
+                    projects_count:
+                      type: integer
+                    repositories_count:
+                      type: integer
+                    repositories_failed_count:
+                      type: string
+                    repositories_synced_count:
+                      type: string
+                    repositories_synced_in_percentage:
+                      type: string
+                    wikis_count:
+                      type: integer
+                    wikis_failed_count:
+                      type: string
+                    wikis_synced_count:
+                      type: string
+                    wikis_synced_in_percentage:
+                      type: string
+                    replication_slots_count:
+                      type: integer
+                    replication_slots_used_count:
+                      type: integer
+                    replication_slots_used_in_percentage:
+                      type: string
+                    replication_slots_max_retained_wal_bytes:
+                      type: integer
+                    repositories_checked_count:
+                      type: integer
+                    repositories_checked_failed_count:
+                      type: integer
+                    repositories_checked_in_percentage:
+                      type: string
+                    repositories_checksummed_count:
+                      type: integer
+                    repositories_checksum_failed_count:
+                      type: integer
+                    repositories_checksummed_in_percentage:
+                      type: string
+                    wikis_checksummed_count:
+                      type: integer
+                    wikis_checksum_failed_count:
+                      type: integer
+                    wikis_checksummed_in_percentage:
+                      type: string
+                    repositories_verified_count:
+                      type: integer
+                    repositories_verification_failed_count:
+                      type: integer
+                    repositories_verified_in_percentage:
+                      type: string
+                    repositories_checksum_mismatch_count:
+                      type: integer
+                    wikis_verified_count:
+                      type: integer
+                    wikis_verification_failed_count:
+                      type: integer
+                    wikis_verified_in_percentage:
+                      type: string
+                    wikis_checksum_mismatch_count:
+                      type: integer
+                    repositories_retrying_verification_count:
+                      type: integer
+                    wikis_retrying_verification_count:
+                      type: integer
+                    last_event_id:
+                      type: integer
+                    last_event_timestamp:
+                      type: integer
+                    cursor_last_event_id:
+                      type: string
+                    cursor_last_event_timestamp:
+                      type: integer
+                    last_successful_status_check_timestamp:
+                      type: integer
+                    version:
+                      type: string
+                    revision:
+                      type: string
+                    package_files_count:
+                      type: integer
+                    package_files_checksummed_count:
+                      type: integer
+                    package_files_checksum_failed_count:
+                      type: integer
+                    package_files_registry_count:
+                      type: integer
+                    package_files_synced_count:
+                      type: integer
+                    package_files_failed_count:
+                      type: integer
+                    snippet_repositories_count:
+                      type: integer
+                    snippet_repositories_checksummed_count:
+                      type: integer
+                    snippet_repositories_checksum_failed_count:
+                      type: integer
+                    snippet_repositories_registry_count:
+                      type: integer
+                    snippet_repositories_synced_count:
+                      type: integer
+                    snippet_repositories_failed_count:
+                      type: integer
+  '/geo_nodes/{id}/status':
+    get:
+      tags:
+        - Geo Nodes
+      parameters:
+        - name: id
+          schema:
+            type: integer
+          required: true
+          in: path
+          description: The ID of the Geo node.
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  geo_node_id:
+                    type: integer
+                  healthy:
+                    type: boolean
+                  health:
+                    type: string
+                  health_status:
+                    type: string
+                  missing_oauth_application:
+                    type: boolean
+                  attachments_count:
+                    type: integer
+                  attachments_synced_count:
+                    type: integer
+                  attachments_failed_count:
+                    type: integer
+                  attachments_synced_missing_on_primary_count:
+                    type: integer
+                  attachments_synced_in_percentage:
+                    type: string
+                  db_replication_lag_seconds:
+                    type: integer
+                  lfs_objects_count:
+                    type: integer
+                  lfs_objects_synced_count:
+                    type: integer
+                  lfs_objects_failed_count:
+                    type: integer
+                  lfs_objects_synced_missing_on_primary_count:
+                    type: integer
+                  lfs_objects_synced_in_percentage:
+                    type: string
+                  job_artifacts_count:
+                    type: integer
+                  job_artifacts_synced_count:
+                    type: integer
+                  job_artifacts_failed_count:
+                    type: integer
+                  job_artifacts_synced_missing_on_primary_count:
+                    type: integer
+                  job_artifacts_synced_in_percentage:
+                    type: string
+                  container_repositories_count:
+                    type: integer
+                  container_repositories_synced_count:
+                    type: string
+                  container_repositories_failed_count:
+                    type: string
+                  container_repositories_synced_in_percentage:
+                    type: string
+                  design_repositories_count:
+                    type: integer
+                  design_repositories_synced_count:
+                    type: string
+                  design_repositories_failed_count:
+                    type: string
+                  design_repositories_synced_in_percentage:
+                    type: string
+                  projects_count:
+                    type: integer
+                  repositories_count:
+                    type: integer
+                  repositories_failed_count:
+                    type: integer
+                  repositories_synced_count:
+                    type: integer
+                  repositories_synced_in_percentage:
+                    type: string
+                  wikis_count:
+                    type: integer
+                  wikis_failed_count:
+                    type: integer
+                  wikis_synced_count:
+                    type: integer
+                  wikis_synced_in_percentage:
+                    type: string
+                  replication_slots_count:
+                    type: string
+                  replication_slots_used_count:
+                    type: string
+                  replication_slots_used_in_percentage:
+                    type: string
+                  replication_slots_max_retained_wal_bytes:
+                    type: string
+                  last_event_id:
+                    type: integer
+                  last_event_timestamp:
+                    type: integer
+                  cursor_last_event_id:
+                    type: integer
+                  cursor_last_event_timestamp:
+                    type: integer
+                  last_successful_status_check_timestamp:
+                    type: integer
+                  version:
+                    type: string
+                  revision:
+                    type: string
+  /geo_nodes/current/failures:
+    get:
+      tags:
+        - Geo Nodes
+      parameters:
+        - name: type
+          schema:
+            type: string
+          required: false
+          in: query
+          description: Type of failed objects (repository/wiki)
+        - name: failure_type
+          schema:
+            type: string
+          required: false
+          in: query
+          description: Type of failures (sync/checksum_mismatch/verification)
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    project_id:
+                      type: integer
+                    last_repository_synced_at:
+                      type: string
+                    last_repository_successful_sync_at:
+                      type: string
+                    last_wiki_synced_at:
+                      type: string
+                    last_wiki_successful_sync_at:
+                      type: string
+                    repository_retry_count:
+                      type: string
+                    wiki_retry_count:
+                      type: integer
+                    last_repository_sync_failure:
+                      type: string
+                    last_wiki_sync_failure:
+                      type: string
+                    last_repository_verification_failure:
+                      type: string
+                    last_wiki_verification_failure:
+                      type: string
+                    repository_verification_checksum_sha:
+                      type: string
+                    wiki_verification_checksum_sha:
+                      type: string
+                    repository_checksum_mismatch:
+                      type: boolean
+                    wiki_checksum_mismatch:
+                      type: boolean

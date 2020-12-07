@@ -1,0 +1,49 @@
+openapi: 3.0.0
+info:
+  title: commits
+  version: v4
+  description: An OpenAPI definition for the GitLab REST API.
+servers:
+  - url: 'https://10.177.74.168.com/api/v4'
+paths:
+  /templates/gitignores:
+    get:
+      tags:
+        - .gitignore API
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    key:
+                      type: string
+                    name:
+                      type: string
+  '/templates/gitignores/{key}':
+    get:
+      tags:
+        - .gitignore API
+      parameters:
+        - name: key
+          schema:
+            type: string
+          required: true
+          in: path
+          description: The key of the .gitignore template
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  content:
+                    type: string

@@ -1,0 +1,378 @@
+openapi: 3.0.0
+info:
+  title: Environments
+  version: v4
+  description: An OpenAPI definition for the GitLab REST API.
+servers:
+  - url: 'https://10.177.74.168.com/api/v4'
+paths:
+  '/projects/{id}/feature_flags':
+    get:
+      tags:
+        - Feature Flags
+      parameters:
+        - name: id
+          schema:
+            oneOf:
+              - type: string
+              - type: integer
+          required: true
+          in: path
+          description: The ID or URL-encoded path of the project.
+        - name: scope
+          schema:
+            type: string
+          required: false
+          in: query
+          description: 'The condition of feature flags, one of: enabled, disabled.'
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    description:
+                      type: string
+                    active:
+                      type: boolean
+                    version:
+                      type: string
+                    created_at:
+                      type: string
+                    updated_at:
+                      type: string
+                    scopes:
+                      type: array
+                      items:
+                        type: object
+                    strategies:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                          name:
+                            type: string
+                          parameters:
+                            type: object
+                            properties:
+                              userIds:
+                                type: string
+                          scopes:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                environment_scope:
+                                  type: string
+    post:
+      tags:
+        - Feature Flags
+      parameters:
+        - name: id
+          schema:
+            oneOf:
+              - type: string
+              - type: integer
+          required: true
+          in: path
+          description: The ID or URL-encoded path of the project.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the feature flag.
+                version:
+                  type: string
+                  description: >-
+                    The version of the feature flag. Must be new_version_flag.
+                    Omit or set to legacy_flag to create a Legacy Feature Flag.
+                description:
+                  type: string
+                  description: The description of the feature flag.
+                active:
+                  type: boolean
+                  description: >-
+                    The active state of the flag. Defaults to true. Supported in
+                    GitLab 13.3 and later.
+                strategies:
+                  type: string
+                  format: JSON
+                  description: The feature flag strategies.
+                'strategies:name':
+                  type: string
+                  format: JSON
+                  description: >-
+                    The strategy name. Can be default, gradualRolloutUserId,
+                    userWithId, or gitlabUserList. In GitLab 13.5 and later, can
+                    be flexibleRollout.
+                'strategies:parameters':
+                  type: string
+                  format: JSON
+                  description: The strategy parameters.
+                'strategies:scopes':
+                  type: string
+                  format: JSON
+                  description: The scopes for the strategy.
+                'strategies:scopes:environment_scope':
+                  type: string
+                  description: The environment spec for the scope.
+              required:
+                - name
+                - version
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  active:
+                    type: boolean
+                  version:
+                    type: string
+                  created_at:
+                    type: string
+                  updated_at:
+                    type: string
+                  scopes:
+                    type: array
+                    items:
+                      type: object
+                  strategies:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        parameters:
+                          type: object
+                        scopes:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                              environment_scope:
+                                type: string
+  '/projects/{id}/feature_flags/{feature_flag_name}':
+    get:
+      tags:
+        - Feature Flags
+      parameters:
+        - name: id
+          schema:
+            oneOf:
+              - type: string
+              - type: integer
+          required: true
+          in: path
+          description: The ID or URL-encoded path of the project.
+        - name: feature_flag_name
+          schema:
+            type: string
+          required: true
+          in: path
+          description: The name of the feature flag.
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  active:
+                    type: boolean
+                  version:
+                    type: string
+                  created_at:
+                    type: string
+                  updated_at:
+                    type: string
+                  scopes:
+                    type: array
+                    items:
+                      type: object
+                  strategies:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        parameters:
+                          type: object
+                        scopes:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                              environment_scope:
+                                type: string
+    put:
+      tags:
+        - Feature Flags
+      parameters:
+        - name: id
+          schema:
+            oneOf:
+              - type: string
+              - type: integer
+          required: true
+          in: path
+          description: The ID or URL-encoded path of the project.
+        - name: feature_flag_name
+          schema:
+            type: string
+          required: true
+          in: path
+          description: The current name of the feature flag.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+                  description: The description of the feature flag.
+                active:
+                  type: boolean
+                  description: >-
+                    The active state of the flag. Supported in GitLab 13.3 and
+                    later.
+                name:
+                  type: string
+                  description: >-
+                    The new name of the feature flag. Supported in GitLab 13.3
+                    and later.
+                strategies:
+                  type: string
+                  format: JSON
+                  description: The feature flag strategies.
+                'strategies:id':
+                  type: string
+                  format: JSON
+                  description: The feature flag strategy ID.
+                'strategies:name':
+                  type: string
+                  format: JSON
+                  description: The strategy name.
+                'strategies:parameters':
+                  type: string
+                  format: JSON
+                  description: The strategy parameters.
+                'strategies:scopes':
+                  type: string
+                  format: JSON
+                  description: The scopes for the strategy.
+                'strategies:scopes:id':
+                  type: string
+                  format: JSON
+                  description: The scopes ID.
+                'strategies:scopes:environment_scope':
+                  type: string
+                  description: The environment spec for the scope.
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  active:
+                    type: boolean
+                  version:
+                    type: string
+                  created_at:
+                    type: string
+                  updated_at:
+                    type: string
+                  scopes:
+                    type: array
+                    items:
+                      type: object
+                  strategies:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        parameters:
+                          type: object
+                          properties:
+                            groupId:
+                              type: string
+                            percentage:
+                              type: string
+                        scopes:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                              environment_scope:
+                                type: string
+    delete:
+      tags:
+        - Feature Flags
+      parameters:
+        - name: id
+          schema:
+            oneOf:
+              - type: string
+              - type: integer
+          required: true
+          in: path
+          description: The ID or URL-encoded path of the project.
+        - name: feature_flag_name
+          schema:
+            type: string
+          required: true
+          in: path
+          description: The name of the feature flag.
+      responses:
+        '200':
+          description: success

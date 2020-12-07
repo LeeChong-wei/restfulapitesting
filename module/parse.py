@@ -13,6 +13,7 @@ def parse(path,version):
     api_list = []
     for server in servers:
         url = server.get("url")
+        url = url.replace('https','http')
         paths = spec.get("paths")
         for api_path in paths:
             methods = paths.get(api_path)
@@ -59,4 +60,4 @@ def parse(path,version):
     pass
 
 
-# parse(os.path.join(my_path, "../openapi/group-and-project-access-requests-api.yaml"), 1.0)
+# parse(os.path.join(my_path, "../openapi/access_requests.yaml"), 1.0)

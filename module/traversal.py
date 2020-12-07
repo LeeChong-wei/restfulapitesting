@@ -54,3 +54,4 @@ def traversal(graph):
     return topology_order
 
 
+# print(traversal(graph))
