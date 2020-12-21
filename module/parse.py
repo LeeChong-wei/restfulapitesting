@@ -4,7 +4,7 @@ from entity.field_info import field_info
 import os.path
 
 
-# my_path = os.path.abspath(os.path.dirname(__file__))
+my_path = os.path.abspath(os.path.dirname(__file__))
 def parse(path,version):
     parser = ResolvingParser(path)
     spec = parser.specification
@@ -26,18 +26,30 @@ def parse(path,version):
                 if params:
                     for param in params:
                         field_name = param.get("name")
+                        if 'oneOf' in param['schema']:
+                            type_ = 'integer or string'
+                        elif 'type' in param['schema']:
+                            type_ = param['schema'].get("type")
+                        else:
+                            type_ = 'string'
                         require = param.get("required")
                         in_ = param.get("in")
                         if in_ == 'path':
                             in_ = 0
                         elif in_ == 'query':
                             in_ = 1
-                        req_param = field_info(field_name, require, "No", False, in_)
+                        req_param = field_info(field_name, type_, require, "No", False, in_)
                         req_param_list.append(req_param)
                 if requestBody:
                     properties = requestBody['content']['application/json']['schema']['properties']
                     for property_ in properties:
-                        req_param = field_info(property_, 'false', "No", False, 3)
+                        if "oneOf" in properties[property_]:
+                            type_ = 'integer or string'
+                        elif 'type_' in properties[property_]:
+                            type_ = properties[property_]['type']
+                        else:
+                            type_ = 'string'
+                        req_param = field_info(property_, type_,'false', "No", False, 3)
                         req_param_list.append(req_param)
                 responses = methods.get(method).get("responses")
                 resp_param_list = []
@@ -48,11 +60,23 @@ def parse(path,version):
                             array = schema['items']
                             if array['type'] == 'object':
                                 for object_ in array['properties']:
-                                    resp_param = field_info(object_, "No", "No", False, "No")
+                                    if "oneOf" in array['properties'][object_]:
+                                        type_ = 'integer or string'
+                                    elif 'type' in array['properties'][object_]:
+                                        type_ = array['properties'][object_]['type']
+                                    else:
+                                        type_ = 'string'
+                                    resp_param = field_info(object_, type_, "No", "No", False, "No")
                                     resp_param_list.append(resp_param)
                         elif schema['type'] == 'object':
                             for object_ in schema['properties']:
-                                resp_param = field_info(object_, "No", "No", False, "No")
+                                if "oneOf" in schema['properties'][object_]:
+                                    type_ = 'integer or string'
+                                elif 'type' in schema['properties'][object_]:
+                                    type_ = schema['properties'][object_]['type']
+                                else:
+                                    type_ = 'string'
+                                resp_param = field_info(object_, type_, "No", "No", False, "No")
                                 resp_param_list.append(resp_param)
                 api = api_info(api_id, complete_api_path, req_param_list, resp_param_list, method)
                 api_list.append(api)
@@ -60,4 +84,4 @@ def parse(path,version):
     pass
 
 
-# parse(os.path.join(my_path, "../openapi/access_requests.yaml"), 1.0)
+parse(os.path.join(my_path, "../openapi/commit.yaml"), 1.0)
