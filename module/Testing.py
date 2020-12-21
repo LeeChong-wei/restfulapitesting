@@ -11,7 +11,7 @@ import os.path
 
 # 获取依赖测试顺序
 my_path = os.path.abspath(os.path.dirname(__file__))
-api_info_list = parse(os.path.join(my_path, "../openapi/project.yaml"), 1.0)
+api_info_list = parse(os.path.join(my_path, "../openapi/openapi.yaml"), 1.0)
 matrix, weight_info_list = get_dep_info(api_info_list)
 graph = matrix.tolist()
 test_seq = traversal(graph)
@@ -115,7 +115,7 @@ for i in range(0, len(test_seq)):
 
     # 用redis记录post和delete的id
     if method == 'post':
-        for i in range(5):
+        for i in range(2):
             url = api_info.path
             for field_info in api_info.req_param:
                 if field_info.require:
@@ -128,6 +128,7 @@ for i in range(0, len(test_seq)):
                         valu = resp.lindex(str(field_info.field_name),
                                            random.choice(str(index)))  # 从response的redis中根据name取对应value
                         value = str(valu, encoding="utf-8")
+
                     else:
                         value = None
                     if field_info.field_name == 'user_id':
@@ -153,13 +154,14 @@ for i in range(0, len(test_seq)):
                         pass
                     elif location == 3:
                         # 参数组成json字符串 ==> data
-                        data = [].append(resp.get(field_info.field_name))
+                        data = [].append(value)
                         pass
             post.lpush('api_id_p', api_info.api_id)
             unit = testUnit(method, url, data)
             response = unit.exec().text
             print(response)
-            reponses = json.loads(response)
+            string = response
+            reponses = json.loads(string)
             json_txt(reponses)
     elif method == 'delete':
         for field_info in api_info.req_param:
@@ -170,8 +172,7 @@ for i in range(0, len(test_seq)):
                     listl = []
                     for i in range(resp.llen(str(field_info.field_name))): listl.append(i + 1)
                     index = random.choice(listl)
-                    valu = resp.lindex(str(field_info.field_name),
-                                        random.choice(str(index)))  # 从response的redis中根据name取对应value
+                    valu = resp.lindex(str(field_info.field_name), random.choice(str(index)))  # 从response的redis中根据name取对应value
                     value = str(valu, encoding="utf-8")
                 else:
                     value = None
@@ -198,14 +199,15 @@ for i in range(0, len(test_seq)):
                     pass
                 elif location == 3:
                     # 参数组成json字符串 ==> data
-                    data = [].append(resp.get(field_info.field_name))
+                    data = [].append(value)
                     pass
         post.lrem('api_id_p', api_info.api_id, 0)
         delete.lpush('api_id_d', api_info.api_id)
         unit = testUnit(method, url, data)
         response = unit.exec().text
         print(response)
-        reponses = json.loads(response)
+        string = response
+        reponses = json.loads(string)
         json_txt(reponses)
     else:
         for field_info in api_info.req_param:
@@ -244,12 +246,13 @@ for i in range(0, len(test_seq)):
                     pass
                 elif location == 3:
                     # 参数组成json字符串 ==> data
-                    data = [].append(field_info.field_name)
+                    data = [].append(value)
                     pass
         unit = testUnit(method, url, data)
         response = unit.exec().text
         print(response)
-        reponses = json.loads(response)
+        string = response
+        reponses = json.loads(string)
         json_txt(reponses)
 
 
