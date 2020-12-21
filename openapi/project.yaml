@@ -520,7 +520,7 @@ paths:
           schema:
             type: string
           required: true
-          in: query
+          in: body
           description: The name of the new project. Equals path if not provided.
         - name: namespace_id
           schema:

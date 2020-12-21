@@ -4,7 +4,7 @@ from entity.field_info import field_info
 import os.path
 
 
-# my_path = os.path.abspath(os.path.dirname(__file__))
+my_path = os.path.abspath(os.path.dirname(__file__))
 def parse(path,version):
     parser = ResolvingParser(path)
     spec = parser.specification
@@ -13,31 +13,37 @@ def parse(path,version):
     api_list = []
     for server in servers:
         url = server.get("url")
-        url = url.replace('https','http')
         paths = spec.get("paths")
         for api_path in paths:
             methods = paths.get(api_path)
             for method in methods:
-                api_id = api_id + 1
+                api_id = api_id + 2
                 complete_api_path = url + api_path
                 params = methods.get(method).get("parameters")
                 requestBody = methods.get(method).get("requestBody")
                 req_param_list = []
+                require_params = []
                 if params:
                     for param in params:
                         field_name = param.get("name")
                         require = param.get("required")
                         in_ = param.get("in")
                         if in_ == 'path':
-                            in_ = 0
-                        elif in_ == 'query':
                             in_ = 1
+                        elif in_ == 'query':
+                            in_ = 2
                         req_param = field_info(field_name, require, "No", False, in_)
                         req_param_list.append(req_param)
                 if requestBody:
-                    properties = requestBody['content']['application/json']['schema']['properties']
+                    schema = requestBody['content']['application/json']['schema']
+                    if 'required' in schema:
+                        require_params = schema['required']
+                    properties = schema['properties']
                     for property_ in properties:
-                        req_param = field_info(property_, 'false', "No", False, 3)
+                        if property_ in require_params:
+                            req_param = field_info(property_, 'True', "No", False, 4)
+                        else:
+                            req_param = field_info(property_, 'false', "No", False, 4)
                         req_param_list.append(req_param)
                 responses = methods.get(method).get("responses")
                 resp_param_list = []
@@ -60,4 +66,4 @@ def parse(path,version):
     pass
 
 
-# parse(os.path.join(my_path, "../openapi/access_requests.yaml"), 1.0)
+parse(os.path.join(my_path, "../openapi/openapi.yaml"), 2.0)
