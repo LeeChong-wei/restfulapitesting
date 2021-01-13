@@ -10341,11 +10341,11 @@ paths:
                         type: string
                       path_with_namespace:
                         type: string
-#  /todos/mark_as_done:
-#    post:
-#      responses:
-#        '200':
-#          description: success
+  /todos/mark_as_done:
+    post:
+      responses:
+        '200':
+          description: success
   '/projects/{id}/repository/tags':
     post:
       tags:
