@@ -9198,7 +9198,7 @@ paths:
                         type: string
                       group:
                         type: string
-  '/groups/:{id}/epics/{epic_iid}':
+  '/groups/{id}/epics/{epic_iid}':
     get:
       tags:
         - Epics
@@ -35195,7 +35195,7 @@ paths:
                       type: boolean
                     repository_storage:
                       type: string
-  '/groups/:{id}':
+  '/groups/{id}':
     get:
       tags:
         - Group
