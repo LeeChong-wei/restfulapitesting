@@ -5,8 +5,92 @@ import os.path
 
 
 
+def parameter_handle(parameter_list, req_param_list):
+    for parameter in parameter_list:
+        parameter_name = parameter['name']
+        parameter_type = parameter['schema']['type']
+        if 'description' in parameter:
+            parameter_description = parameter['description']
+        else:
+            parameter_description = None
+        if 'default' in parameter['schema']:
+            parameter_default = parameter['schema']['default']
+        else:
+            parameter_default = None
+        if 'enum' in parameter['schema']:
+            parameter_enum = parameter['schema']['enum']
+        else:
+            parameter_enum = None
+        if parameter['in'] == 'path':
+            parameter_location = 0
+        else:
+            parameter_location = 1
+        if 'required' in parameter:
+            parameter_required = parameter['required']
+        else:
+            parameter_required = None
+        req_param = field_info(parameter_name, parameter_type, parameter_required, parameter_default,
+                               "No", parameter_location, parameter_description, parameter_enum)
+        req_param_list.append(req_param)
+    return req_param_list
+
+
+def response_handle(methods, method):
+    responses = methods.get(method).get("responses")
+    resp_params_list = []
+    if 'content' in responses['200']:
+        properties = responses['200']['content']['application/json']['schema']['properties']
+    else:
+        return resp_params_list
+    for property in properties:
+        response_name = property
+        if 'type' in properties[response_name]:
+            response_type = properties[response_name]['type']
+        else:
+            response_type = None
+        if 'description' in properties[response_name]:
+            response_description = properties[response_name]['description']
+        else:
+            response_description = None
+        response_property = field_info(response_name, response_type, None, None, None, None,response_description,None)
+        resp_params_list.append(response_property)
+    return resp_params_list
+
+
+def requestBody_handle(requestBody, resp_params_list):
+    required_list = []
+    properties = requestBody['content']['application/json']['schema']['properties']
+    if 'required' in requestBody['content']['application/json']['schema']:
+        required_list = requestBody['content']['application/json']['schema']['required']
+    for property in properties:
+        if property in required_list:
+            request_required = True
+        else:
+            request_required = False
+        if 'default' in properties[property]:
+            request_default = properties[property]['default']
+        else:
+            request_default = None
+        if 'enum' in properties[property]:
+            request_enum = properties[property]['enum']
+        else:
+            request_enum = None
+        if 'description' in properties[property]:
+            request_description = properties[property]['description']
+        else:
+            request_description = None
+        if 'type' in properties[property]:
+            request_type = properties[property]['type']
+        else:
+            request_type = None
+        request_property = field_info(property, request_type,request_required, request_default,
+                                           None, 3, request_description, request_enum)
+        resp_params_list.append(request_property)
+    return resp_params_list
+
+
 def parse(version):
-    path = os.path.join(os.path.abspath(os.path.dirname(__file__)), "../openapi/openapi.yaml")
+    path = os.path.join(os.path.abspath(os.path.dirname(__file__)), "../openapi/wordpress.yaml")
     parser = ResolvingParser(path)
     spec = parser.specification
     servers = spec.get("servers")
@@ -25,60 +109,10 @@ def parse(version):
                 requestBody = methods.get(method).get("requestBody")
                 req_param_list = []
                 if params:
-                    for param in params:
-                        field_name = param.get("name")
-                        if 'oneOf' in param['schema']:
-                            type_ = 'integer or string'
-                        elif 'type' in param['schema']:
-                            type_ = param['schema'].get("type")
-                        else:
-                            type_ = 'string'
-                        require = param.get("required")
-                        in_ = param.get("in")
-                        if in_ == 'path':
-                            in_ = 0
-                        elif in_ == 'query':
-                            in_ = 1
-                        req_param = field_info(field_name, type_, require, "No", False, in_)
-                        req_param_list.append(req_param)
+                    req_param_list = parameter_handle(params, req_param_list)
                 if requestBody:
-                    properties = requestBody['content']['application/json']['schema']['properties']
-                    for property_ in properties:
-                        if "oneOf" in properties[property_]:
-                            type_ = 'integer or string'
-                        elif 'type_' in properties[property_]:
-                            type_ = properties[property_]['type']
-                        else:
-                            type_ = 'string'
-                        req_param = field_info(property_, type_,'false', "No", False, 3)
-                        req_param_list.append(req_param)
-                responses = methods.get(method).get("responses")
-                resp_param_list = []
-                for respond in responses:
-                    if "content" in responses.get(respond):
-                        schema = responses.get(respond).get("content").get("application/json").get("schema")
-                        if schema['type'] == 'array':
-                            array = schema['items']
-                            if array['type'] == 'object':
-                                for object_ in array['properties']:
-                                    if "oneOf" in array['properties'][object_]:
-                                        type_ = 'integer or string'
-                                    elif 'type' in array['properties'][object_]:
-                                        type_ = array['properties'][object_]['type']
-                                    else:
-                                        type_ = 'string'
-                                    resp_param = field_info(object_, type_, "No", "No", False, "No")
-                                    resp_param_list.append(resp_param)
-                        elif schema['type'] == 'object':
-                            for object_ in schema['properties']:
-                                if "oneOf" in schema['properties'][object_]:
-                                    type_ = 'integer or string'
-                                elif 'type' in schema['properties'][object_]:
-                                    type_ = schema['properties'][object_]['type']
-                                else:
-                                    type_ = 'string'
-                                resp_param = field_info(object_, type_, "No", "No", False, "No")
-                                resp_param_list.append(resp_param)
+                    req_param_list = requestBody_handle(requestBody, req_param_list)
+                resp_param_list = response_handle(methods,method)
                 api = api_info(api_id, complete_api_path, req_param_list, resp_param_list, method)
                 api_list.append(api)
     return api_list
