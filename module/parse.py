@@ -28,7 +28,7 @@ def parameter_handle(parameter_list, req_param_list):
         if 'required' in parameter:
             parameter_required = parameter['required']
         else:
-            parameter_required = None
+            parameter_required = False
         req_param = field_info(parameter_name, parameter_type, parameter_required, parameter_default,
                                "No", parameter_location, parameter_description, parameter_enum)
         req_param_list.append(req_param)
@@ -154,4 +154,3 @@ dictionary = {
     649: {"id + group_id + parameters", "id + group_id + responses"},
     640: {"id + group_id + parameters"},
 }
-

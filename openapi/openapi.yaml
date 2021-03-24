@@ -8920,7 +8920,7 @@ paths:
           required: false
           in: query
           description: >-
-            Include epics from the requested group¡¯s ancestors. Default is
+            Include epics from the requested group??s ancestors. Default is
             false
         - name: include_descendant_groups
           schema:
@@ -8928,7 +8928,7 @@ paths:
           required: false
           in: query
           description: >-
-            Include epics from the requested group¡¯s descendants. Default is
+            Include epics from the requested group??s descendants. Default is
             true
         - name: my_reaction_emoji
           schema:
@@ -15919,17 +15919,6 @@ paths:
           required: true
           schema:
             type: string
-      responses:
-        '200':
-          description: success
-  '/projects/{id}/repository/archive':
-    get:
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
       responses:
         '200':
           description: success
