@@ -1,6 +1,6 @@
 import random
 import sys
-from module.Fuzz_value import traversal,fuzzgraph
+from module.Fuzz_value1 import traversal,fuzzgraph
 from module.dep_analysis import get_dep_info
 from module.parse import parse
 import redis

@@ -2,7 +2,7 @@ import random
 import requests
 import redis
 from rest_framework.utils import json
-from module.dep_analysis import get_dep_info
+from module.graph2 import get_dep_info
 from module.parse import parse
 import os.path
 import sys
